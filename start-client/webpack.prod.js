@@ -11,7 +11,7 @@ const path = require('path')
 
 const config = {
   mode: 'production',
-  devtool: 'source-map',
+  //devtool: 'source-map',
   optimization: {
     runtimeChunk: true,
     splitChunks: {
@@ -21,7 +21,7 @@ const config = {
   output: {
     publicPath: './',
   },
-  plugins: [
+  /* plugins: [
     new BundleAnalyzerPlugin({
       analyzerMode: 'static',
       openAnalyzer: false,
@@ -30,7 +30,7 @@ const config = {
       reportFilename: '../analysis/bundle-analyzer.html',
     }),
     new WebpackBundleSizeAnalyzerPlugin('../analysis/bundle-size-analyzer.log'),
-  ],
+  ], */
 }
 
 module.exports = merge(common, config)

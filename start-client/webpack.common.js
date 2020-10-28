@@ -89,7 +89,7 @@ const config = {
       image: `https://start.spring.io/images/initializr-card.jpg`,
       theme: `#6db33f`,
     }),
-    new WebpackGoogleTagManager(process.env.GOOGLE_TAGMANAGER_ID),
+    //new WebpackGoogleTagManager(process.env.GOOGLE_TAGMANAGER_ID),
     new WebpackPwaManifest({
       name: 'spring-initializr',
       short_name: 'Start',
