@@ -1,0 +1,10 @@
+### Start Client ###
+#/start-client/public/
+/start-client/src/test/
+/start-client/node_modules/
+/start-client/node/
+/start-client/.env
+/start-client/.cache/
+/start-client/package-lock.json
+/start-client/yarn-error.log
+/start-client/analysis
