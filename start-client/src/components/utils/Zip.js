@@ -11,6 +11,8 @@ const FILE_EXTENSION = {
   xml: 'xml',
   properties: 'properties',
   groovy: 'groovy',
+  yml: 'yaml',
+  yaml: 'yaml',
 }
 
 export const getLanguage = file => {
