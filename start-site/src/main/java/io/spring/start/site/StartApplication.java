@@ -21,7 +21,7 @@ import java.nio.file.Files;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.spring.initializr.versionresolver.DependencyManagementVersionResolver;
-import io.spring.initializr.web.support.SaganInitializrMetadataUpdateStrategy;
+import io.spring.initializr.web.support.LazyInitializrMetadataUpdateStrategy;
 import io.spring.start.site.project.ProjectDescriptionCustomizerConfiguration;
 import io.spring.start.site.support.CacheableDependencyManagementVersionResolver;
 import io.spring.start.site.web.HomeController;
@@ -67,10 +67,16 @@ public class StartApplication {
 		};
 	}
 
+//	@Bean
+//	public SaganInitializrMetadataUpdateStrategy initializrMetadataUpdateStrategy(
+//			RestTemplateBuilder restTemplateBuilder, ObjectMapper objectMapper) {
+//		return new SaganInitializrMetadataUpdateStrategy(restTemplateBuilder.build(), objectMapper);
+//	}
+	
 	@Bean
-	public SaganInitializrMetadataUpdateStrategy initializrMetadataUpdateStrategy(
+	public LazyInitializrMetadataUpdateStrategy initializrMetadataUpdateStrategy(
 			RestTemplateBuilder restTemplateBuilder, ObjectMapper objectMapper) {
-		return new SaganInitializrMetadataUpdateStrategy(restTemplateBuilder.build(), objectMapper);
+		return new LazyInitializrMetadataUpdateStrategy(restTemplateBuilder.build(), objectMapper);
 	}
 
 	@Bean

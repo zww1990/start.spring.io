@@ -1430,6 +1430,33 @@ initializr:
             - rel: guide
               href: https://github.com/alibaba/spring-cloud-alibaba/tree/master/spring-cloud-alibaba-examples/sentinel-example/sentinel-core-example
               description: Sentinel Example
+    - name: Documentation
+      content:
+        - name: Swagger UI
+          id: swagger
+          description: JSON API documentation for spring based applications.
+          group-id: io.springfox
+          artifact-id: springfox-boot-starter
+          version: 3.0.0
+          links:
+            - rel: reference
+              href: https://swagger.io/
+              description: API Documentation & Design Tools for Teams | Swagger.
+            - rel: guide
+              href: https://swagger.io/specification/
+              description: OpenAPI Specification
+            - rel: guide
+              href: https://swagger.io/resources/
+              description: API Resources
+            - rel: guide
+              href: https://swagger.io/docs/open-source-tools/swagger-editor/
+              description: Swagger Documentation
+            - rel: guide
+              href: https://swagger.io/docs/swagger-inspector/how-to-use-swagger-inspector/
+              description: How to Use Swagger Inspector
+            - rel: guide
+              href: https://app.swaggerhub.com/help/index
+              description: Build, Collaborate & Integrate APIs | SwaggerHub
   types:
     - name: Maven Project
       id: maven-project
@@ -1474,10 +1501,10 @@ initializr:
     - id: 15
       default: false
     - id: 11
-      default: true
+      default: false
     - id: 1.8
       name: 8
-      default: false
+      default: true
   languages:
     - name: Java
       id: java
