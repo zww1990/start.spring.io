@@ -21,6 +21,10 @@ spring:
   task:
     execution:
       thread-name-prefix: initializr-
+  web:
+    resources:
+      cache:
+        use-last-modified: false
 
 initializr:
   env:
@@ -49,8 +53,8 @@ initializr:
             version: 2.1.6
           - compatibilityRange: "[2.2.0.M1,2.3.0.M1)"
             version: 2.2.4
-          - compatibilityRange: "[2.3.0.M1,2.4.0-M1)"
-            version: 2.3.0
+          - compatibilityRange: "[2.3.0.M1,2.5.0-M1)"
+            version: 2.3.1
       solace-spring-boot:
         groupId: com.solace.spring.boot
         artifactId: solace-spring-boot-bom
@@ -116,7 +120,7 @@ initializr:
             version: Greenwich.BUILD-SNAPSHOT
             repositories: spring-snapshots,spring-milestones
           - compatibilityRange: "[2.2.0.M4,2.3.x.BUILD-SNAPSHOT)"
-            version: Hoxton.SR8
+            version: Hoxton.SR9
           - compatibilityRange: "[2.3.x.BUILD-SNAPSHOT, 2.4.0.M1)"
             version: Hoxton.BUILD-SNAPSHOT
             repositories: spring-snapshots,spring-milestones
@@ -150,6 +154,18 @@ initializr:
             version: 2.2.6.RELEASE
           - compatibilityRange: "[2.3.0.RELEASE,2.4.0-M1)"
             version: 2.3.0.RELEASE
+      spring-geode:
+        groupId: org.springframework.geode
+        artifactId: spring-geode-bom
+        versionProperty: spring-geode.version
+        mappings:
+          - compatibilityRange: "[2.2.0.M5,2.3.0.M1)"
+            version: 1.2.11.RELEASE
+          - compatibilityRange: "[2.3.0.M1,2.4.0-M1)"
+            version: 1.3.5.RELEASE
+          - compatibilityRange: "2.4.0-M1"
+            version: 1.4.0-RC1
+            repositories: spring-milestones
       spring-statemachine:
         groupId: org.springframework.statemachine
         artifactId: spring-statemachine-bom
@@ -166,7 +182,7 @@ initializr:
       testcontainers:
         groupId: org.testcontainers
         artifactId: testcontainers-bom
-        version: 1.14.3
+        version: 1.15.0
         versionProperty: testcontainers.version
       vaadin:
         groupId: com.vaadin
@@ -654,19 +670,12 @@ initializr:
             - rel: reference
               href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-cassandra
         - name: Spring for Apache Geode
+          bom: spring-geode
           id: geode
           compatibilityRange: "2.2.0.M5"
           groupId: org.springframework.geode
           artifactId: spring-geode-starter
           description: Apache Geode is a data management platform that helps users build real-time, highly concurrent, highly performant and reliable Spring Boot applications at scale that is compatible with Pivotal Cloud Cache.
-          mappings:
-            - compatibilityRange: "[2.2.0.M5,2.3.0.M1)"
-              version: 1.2.10.RELEASE
-            - compatibilityRange: "[2.3.0.M1,2.4.0-M1)"
-              version: 1.3.4.RELEASE
-            - compatibilityRange: "2.4.0-M1"
-              version: 1.4.0-M4
-              repository: spring-milestones
           links:
             - rel: reference
               href: https://docs.spring.io/spring-boot-data-geode-build/current/reference/html5/
@@ -863,7 +872,7 @@ initializr:
           groupId: de.codecentric
           artifactId: spring-boot-admin-starter-client
           description: Required for your application to register with a Codecentric's Spring Boot Admin Server instance.
-          compatibilityRange: "[2.0.0.RELEASE,2.4.0-M1)"
+          compatibilityRange: "[2.0.0.RELEASE,2.5.0-M1)"
           bom: codecentric-spring-boot-admin
           links:
             - rel: reference
@@ -873,7 +882,7 @@ initializr:
           groupId: de.codecentric
           artifactId: spring-boot-admin-starter-server
           description: A community project to manage and monitor your Spring Boot applications. Provides a UI on top of the Spring Boot Actuator endpoints.
-          compatibilityRange: "[2.0.0.RELEASE,2.4.0-M1)"
+          compatibilityRange: "[2.0.0.RELEASE,2.5.0-M1)"
           bom: codecentric-spring-boot-admin
           links:
             - rel: reference
@@ -1526,12 +1535,15 @@ initializr:
 ---
 
 spring:
-  profiles: dev
-  resources:
-    static_locations:
-      - file:start-client/public/
+  config:
+    activate:
+      on-profile: dev
   devtools:
     restart:
       additional_paths:
         - start-client/public/
       additional_exclude: "**/*.js,**/*.css,**/*.html"
+  web:
+    resources:
+      static-locations:
+        - file:start-client/public/
