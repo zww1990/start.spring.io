@@ -130,7 +130,10 @@ initializr:
           - compatibilityRange: "[2.4.0.M2,2.4.0-M3]"
             version: 2020.0.0-M4
             repositories: spring-milestones
-          - compatibilityRange: "2.4.0-M4"
+          - compatibilityRange: "[2.4.0.M4,2.4.x-SNAPSHOT)"
+            version: 2020.0.0-M5
+            repositories: spring-milestones
+          - compatibilityRange: "2.4.x-SNAPSHOT"
             version: 2020.0.0-SNAPSHOT
             repositories: spring-snapshots,spring-milestones
       spring-cloud-alibaba:
@@ -162,7 +165,7 @@ initializr:
           - compatibilityRange: "[2.2.0.M5,2.3.0.M1)"
             version: 1.2.11.RELEASE
           - compatibilityRange: "[2.3.0.M1,2.4.0-M1)"
-            version: 1.3.5.RELEASE
+            version: 1.3.6.RELEASE
           - compatibilityRange: "2.4.0-M1"
             version: 1.4.0-RC1
             repositories: spring-milestones
@@ -1246,7 +1249,12 @@ initializr:
           id: cloud-starter-zipkin
           description: Distributed tracing with an existing Zipkin installation and Spring Cloud Sleuth Zipkin.
           groupId: org.springframework.cloud
-          artifactId: spring-cloud-starter-zipkin
+          artifactId: spring-cloud-sleuth-zipkin
+          starter: false
+          mappings:
+            - compatibilityRange: "[2.0.0.RELEASE,2.4.0.M3]"
+              artifactId: spring-cloud-starter-zipkin
+              starter: true
     - name: Spring Cloud Messaging
       bom: spring-cloud
       content:
