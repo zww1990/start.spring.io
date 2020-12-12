@@ -171,12 +171,11 @@ initializr:
         versionProperty: spring-geode.version
         mappings:
           - compatibilityRange: "[2.2.0.M5,2.3.0.M1)"
-            version: 1.2.11.RELEASE
+            version: 1.2.12.RELEASE
           - compatibilityRange: "[2.3.0.M1,2.4.0-M1)"
-            version: 1.3.6.RELEASE
+            version: 1.3.7.RELEASE
           - compatibilityRange: "2.4.0-M1"
-            version: 1.4.0-RC1
-            repositories: spring-milestones
+            version: 1.4.0
       spring-statemachine:
         groupId: org.springframework.statemachine
         artifactId: spring-statemachine-bom
@@ -578,6 +577,13 @@ initializr:
           description: Lightweight 100% Java SQL Database Engine.
           groupId: org.hsqldb
           artifactId: hsqldb
+          scope: runtime
+          starter: false
+        - name: MariaDB Driver
+          id: mariadb
+          description: MariaDB JDBC and R2DBC driver.
+          groupId: org.mariadb.jdbc
+          artifactId: mariadb-java-client
           scope: runtime
           starter: false
         - name: MS SQL Server Driver
