@@ -131,7 +131,7 @@ initializr:
             version: 2020.0.0-M4
             repositories: spring-milestones
           - compatibilityRange: "[2.4.0.M4,2.4.x-SNAPSHOT)"
-            version: 2020.0.0-M6
+            version: 2020.0.0-RC1
             repositories: spring-milestones
           - compatibilityRange: "2.4.x-SNAPSHOT"
             version: 2020.0.0-SNAPSHOT
@@ -210,7 +210,10 @@ initializr:
         mappings:
           - compatibilityRange: "[2.1.0.RELEASE,2.4.0-M1)"
             version: 2.0.2
-          - compatibilityRange: "2.4.0-M1"
+          - compatibilityRange: "[2.4.0-M1,2.4.x-SNAPSHOT)"
+            version: 2.1.0-RC1
+            repositories: spring-milestones
+          - compatibilityRange: "2.4.x-SNAPSHOT"
             version: 2.1.0-SNAPSHOT
             repositories: spring-snapshots
     gradle:
@@ -808,7 +811,7 @@ initializr:
             - reactive
         - name: Apache Camel
           id: camel
-          compatibilityRange: "[2.0.0.M1,2.4.0-M1)"
+          compatibilityRange: "[2.0.0.M1,2.5.0-M1)"
           mappings:
             - compatibilityRange: "[2.0.0.M1,2.1.0.M1)"
               version: 2.22.4
@@ -820,6 +823,8 @@ initializr:
               version: 3.3.0
             - compatibilityRange: "[2.3.0.M1,2.4.0-M1)"
               version: 3.5.0
+            - compatibilityRange: "[2.4.0.M1,2.5.0-M1)"
+              version: 3.7.0              
           description: Apache Camel is an open source integration framework that empowers you to quickly and easily integrate various systems consuming or producing data.
           groupId: org.apache.camel.springboot
           artifactId: camel-spring-boot-starter
