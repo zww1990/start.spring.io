@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: start-app
-          image: gcr.io/cf-spring-boot/initializr-k8s-image@sha256:c4c3c8a8a3dc4eb85092836734a6e52fb90826b7ec14e4149e24ee26fbf7ef3d
+          image: gcr.io/cf-spring-boot/initializr-k8s-image@sha256:ffec5de18a8e2b5b512d899e6c350521501fa86dabd48381e1bf113ec7bd6f5c
           lifecycle:
             preStop:
               exec:
@@ -30,11 +30,16 @@ spec:
             httpGet:
               path: /actuator/health/readiness
               port: 8080
+          volumeMounts:
+            - name: elastic
+              mountPath: "/etc/config/initializr/stats/elastic"
+              readOnly: true
           env:
             - name: SERVER_SHUTDOWN
               value: graceful
-            - name: INITIALIZR_STATS_ELASTIC_URI
-              valueFrom:
-                secretKeyRef:
-                  name: elastic
-                  key: uri
+            - name: SPRING_CONFIG_IMPORT
+              value: configtree:/etc/config/
+      volumes:
+        - name: elastic
+          secret:
+            secretName: elastic
