@@ -56,14 +56,6 @@ public class StartApplication {
 		return new HomeController();
 	}
 
-	@Bean
-	public ErrorPageRegistrar errorPageRegistrar() {
-		return (registry) -> {
-			registry.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/404.html"));
-			registry.addErrorPages(new ErrorPage("/error/index.html"));
-		};
-	}
-
 //	@Bean
 //	public StartInitializrMetadataUpdateStrategy initializrMetadataUpdateStrategy(
 //			RestTemplateBuilder restTemplateBuilder, ObjectMapper objectMapper) {
