@@ -45,7 +45,7 @@ initializr:
           - compatibilityRange: "[2.4.0.M1,2.5.0-M1)"
             version: 3.5.0
           - compatibilityRange: "[2.5.0.M1,2.6.0-M1)"
-            version: 3.6.0
+            version: 3.6.1
       codecentric-spring-boot-admin:
         groupId: de.codecentric
         artifactId: spring-boot-admin-dependencies
@@ -95,7 +95,7 @@ initializr:
         additionalBoms: [ spring-cloud ]
         mappings:
           - compatibilityRange: "[2.4.0-M1,2.6.0-M1)"
-            version: 2.0.3
+            version: 2.0.4
       spring-cloud-services:
         groupId: io.pivotal.spring.cloud
         artifactId: spring-cloud-services-dependencies
@@ -114,11 +114,11 @@ initializr:
           - compatibilityRange: "[2.3.0.M1,2.4.0-M1)"
             version: 1.3.12.RELEASE
           - compatibilityRange: "[2.4.0-M1,2.5.0-M1)"
-            version: 1.4.9
+            version: 1.4.10
           - compatibilityRange: "[2.5.0-M1,2.6.0-M1)"
-            version: 1.5.3
+            version: 1.5.4
           - compatibilityRange: "2.6.0-M1"
-            version: 1.6.0-M1
+            version: 1.6.0-M2
             repository: spring-milestones
       testcontainers:
         groupId: org.testcontainers
@@ -186,10 +186,12 @@ initializr:
               version: 0.10.0
             - compatibilityRange: "[2.5.2,2.5.3)"
               version: 0.10.1
-            - compatibilityRange: "[2.5.3,2.5.x-SNAPSHOT)"
+            - compatibilityRange: "[2.5.3,2.5.4)"
               version: 0.10.2
+            - compatibilityRange: "[2.5.4,2.5.x-SNAPSHOT)"
+              version: 0.10.3
             - compatibilityRange: "[2.5.x-SNAPSHOT,2.6.0-M1)"
-              version: 0.10.3-SNAPSHOT
+              version: 0.10.4-SNAPSHOT
               repository: spring-snapshots
           links:
             - rel: reference
@@ -1280,6 +1282,9 @@ initializr:
           artifactId: azure-spring-boot-starter
           description: Auto-configuration for Azure Services (Service Bus, Storage, Active Directory, Cosmos DB, Key Vault, and more).
           links:
+            - rel: guide
+              href: https://spring.io/guides/gs/spring-boot-for-azure/
+              description: Deploying a Spring Boot app to Azure
             - rel: reference
               href: https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/spring
           mappings:
@@ -1304,7 +1309,7 @@ initializr:
           id: azure-keyvault-secrets
           groupId: com.azure.spring
           artifactId: azure-spring-boot-starter-keyvault-secrets
-          description: Manage application secrets and keys.
+          description: Manage application secrets.
           links:
             - rel: guide
               href: https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/spring/azure-spring-boot-samples/azure-spring-boot-sample-keyvault-secrets
