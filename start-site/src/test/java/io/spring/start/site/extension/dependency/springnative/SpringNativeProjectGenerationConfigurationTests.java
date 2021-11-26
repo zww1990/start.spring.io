@@ -78,8 +78,8 @@ class SpringNativeProjectGenerationConfigurationTests extends AbstractExtensionT
 		ProjectRequest request = createProjectRequest("native");
 		request.setType("gradle-project");
 		assertThat(generateProject(request)).containsFiles("settings.gradle").textFile("settings.gradle")
-				.containsSubsequence("pluginManagement {", "repositories {", "mavenCentral()", "gradlePluginPortal()",
-						"}", "}");
+				.containsSubsequence("pluginManagement {", "repositories {",
+						"maven { url 'https://repo.spring.io/milestone' }", "gradlePluginPortal()", "}", "}");
 	}
 
 	@Test
@@ -123,15 +123,6 @@ class SpringNativeProjectGenerationConfigurationTests extends AbstractExtensionT
 	void gradleBuildConfigureSpringBootPlugin() {
 		assertThat(gradleBuild(createProjectRequest("native"))).lines().containsSequence("bootBuildImage {",
 				"	builder = 'paketobuildpacks/builder:tiny'", "	environment = ['BP_NATIVE_IMAGE': 'true']", "}");
-	}
-
-	@Test
-	void gradleBuildConfigureNativePlugin() {
-		assertThat(gradleBuild(createProjectRequest("native"))).lines()
-				.containsSequence("nativeBuild {", "	classpath processAotResources.outputs, compileAotJava.outputs",
-						"}")
-				.containsSequence("nativeTest {",
-						"	classpath processAotTestResources.outputs, compileAotTestJava.outputs", "}");
 	}
 
 	@Test
@@ -193,6 +184,28 @@ class SpringNativeProjectGenerationConfigurationTests extends AbstractExtensionT
 				"						</env>",
 				"					</image>",
 				"				</configuration>",
+				"			</plugin>");
+		// @formatter:on
+	}
+
+	@Test
+	void mavenBuildWithNative0Dot11ConfigureNativeMavenPlugin() {
+		ProjectRequest request = createProjectRequest("native");
+		request.setBootVersion("2.6.0-M3");
+		assertThat(mavenPom(request)).lines().containsSequence(
+		// @formatter:off
+				"			<plugin>",
+				"				<groupId>org.springframework.experimental</groupId>",
+				"				<artifactId>spring-aot-maven-plugin</artifactId>",
+				"				<version>${spring-native.version}</version>",
+				"				<executions>",
+				"					<execution>",
+				"						<id>generate</id>",
+				"						<goals>",
+				"							<goal>generate</goal>",
+				"						</goals>",
+				"					</execution>",
+				"				</executions>",
 				"			</plugin>");
 		// @formatter:on
 	}
