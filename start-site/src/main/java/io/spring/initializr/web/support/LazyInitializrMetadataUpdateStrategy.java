@@ -64,6 +64,7 @@ public class LazyInitializrMetadataUpdateStrategy extends SaganInitializrMetadat
 
 	private boolean isCompatibleVersion(DefaultMetadataElement versionMetadata) {
 		Version version = Version.parse(versionMetadata.getId());
-		return (version.getMajor() >= 2 && version.getMinor() > 1);
+		return (version.getMajor() == 2 && version.getMinor() > 5) || (version.getMajor() >= 3);
 	}
+
 }
