@@ -14,33 +14,32 @@
  * limitations under the License.
  */
 
-package io.spring.start.site.extension.dependency.springdata;
+package io.spring.start.site.extension.dependency.flyway;
 
-import io.spring.initializr.generator.buildsystem.Build;
 import io.spring.initializr.generator.condition.ConditionalOnRequestedDependency;
 import io.spring.initializr.generator.project.ProjectDescription;
-import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * Configuration for generation of projects that depend on Spring Data.
+ * Configuration for generation of projects that depend on Flyway.
  *
  * @author Stephane Nicoll
  */
-@ProjectGenerationConfiguration
-public class SpringDataProjectGenerationConfiguration {
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnRequestedDependency("flyway")
+class FlywayProjectGenerationConfiguration {
 
 	@Bean
-	@ConditionalOnRequestedDependency("data-r2dbc")
-	public R2dbcBuildCustomizer r2dbcBuildCustomizer(ProjectDescription description) {
-		return new R2dbcBuildCustomizer(description.getPlatformVersion());
+	FlywayProjectContributor flywayProjectContributor() {
+		return new FlywayProjectContributor();
 	}
 
 	@Bean
-	@ConditionalOnRequestedDependency("data-r2dbc")
-	public R2dbcHelpDocumentCustomizer r2dbcHelpDocumentCustomizer(Build build) {
-		return new R2dbcHelpDocumentCustomizer(build);
+	@ConditionalOnRequestedDependency("flyway")
+	FlywayBuildCustomizer flywayBuildCustomizer(ProjectDescription projectDescription) {
+		return new FlywayBuildCustomizer(projectDescription);
 	}
 
 }

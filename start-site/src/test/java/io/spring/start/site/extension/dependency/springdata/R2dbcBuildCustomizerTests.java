@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 the original author or authors.
+ * Copyright 2012-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,8 +58,17 @@ class R2dbcBuildCustomizerTests extends AbstractExtensionTests {
 		Build build = createBuild();
 		build.dependencies().add("data-r2dbc");
 		build.dependencies().add("mysql");
-		customize(build);
+		customize(build, Version.parse("2.6.8"));
 		assertThat(build.dependencies().ids()).containsOnly("data-r2dbc", "mysql", "r2dbc-mysql");
+	}
+
+	@Test
+	void r2dbcWithMysqlAndBorca() {
+		Build build = createBuild();
+		build.dependencies().add("data-r2dbc");
+		build.dependencies().add("mysql");
+		customize(build, Version.parse("2.7.0"));
+		assertThat(build.dependencies().ids()).containsOnly("data-r2dbc", "mysql");
 	}
 
 	@Test
@@ -67,8 +76,19 @@ class R2dbcBuildCustomizerTests extends AbstractExtensionTests {
 		Build build = createBuild();
 		build.dependencies().add("data-r2dbc");
 		build.dependencies().add("postgresql");
-		customize(build);
+		customize(build, Version.parse("2.6.8"));
 		assertThat(build.dependencies().ids()).containsOnly("data-r2dbc", "postgresql", "r2dbc-postgresql");
+		assertThat(build.dependencies().get("r2dbc-postgresql").getGroupId()).isEqualTo("io.r2dbc");
+	}
+
+	@Test
+	void r2dbcWithPostgresqlAndBorca() {
+		Build build = createBuild();
+		build.dependencies().add("data-r2dbc");
+		build.dependencies().add("postgresql");
+		customize(build, Version.parse("3.0.0-M2"));
+		assertThat(build.dependencies().ids()).containsOnly("data-r2dbc", "postgresql", "r2dbc-postgresql");
+		assertThat(build.dependencies().get("r2dbc-postgresql").getGroupId()).isEqualTo("org.postgresql");
 	}
 
 	@Test
@@ -122,12 +142,19 @@ class R2dbcBuildCustomizerTests extends AbstractExtensionTests {
 
 	private Build createBuild() {
 		InitializrMetadata metadata = getMetadata();
-		return new MavenBuild(new MetadataBuildItemResolver(metadata,
-				Version.parse(metadata.getBootVersions().getDefault().getId())));
+		return new MavenBuild(new MetadataBuildItemResolver(metadata, getDefaultPlatformVersion(metadata)));
 	}
 
 	private void customize(Build build) {
-		new R2dbcBuildCustomizer().customize(build);
+		customize(build, getDefaultPlatformVersion(getMetadata()));
+	}
+
+	private void customize(Build build, Version platformVersion) {
+		new R2dbcBuildCustomizer(platformVersion).customize(build);
+	}
+
+	private Version getDefaultPlatformVersion(InitializrMetadata metadata) {
+		return Version.parse(metadata.getBootVersions().getDefault().getId());
 	}
 
 }
