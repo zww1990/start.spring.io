@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 the original author or authors.
+ * Copyright 2012-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package io.spring.start.site.extension.dependency.springnative;
 import io.spring.initializr.generator.version.Version;
 import io.spring.initializr.metadata.InitializrMetadata;
 import io.spring.initializr.metadata.InitializrMetadataProvider;
+import io.spring.initializr.web.project.ProjectRequest;
 import io.spring.start.site.extension.AbstractExtensionTests;
 import org.junit.jupiter.api.Test;
 
@@ -73,6 +74,16 @@ class SpringNativeProjectGenerationConfigurationTests extends AbstractExtensionT
 	}
 
 	@Test
+	void gradleBuildConfigureMavenCentral() {
+		ProjectRequest request = createNativeProjectRequest();
+		request.setType("gradle-project");
+		assertThat(generateProject(request)).containsFiles("settings.gradle").textFile("settings.gradle")
+				.containsSubsequence("pluginManagement {", "repositories {",
+						"maven { url 'https://repo.spring.io/release' }", "mavenCentral", "gradlePluginPortal()", "}",
+						"}");
+	}
+
+	@Test
 	void gradleBuildConfigureAotPlugin() {
 		assertThat(gradleBuild(createProjectRequest("native"))).hasPlugin("org.springframework.experimental.aot",
 				this.springNativeVersion);
@@ -111,8 +122,9 @@ class SpringNativeProjectGenerationConfigurationTests extends AbstractExtensionT
 
 	@Test
 	void gradleBuildConfigureSpringBootPlugin() {
-		assertThat(gradleBuild(createProjectRequest("native"))).lines().containsSequence("bootBuildImage {",
-				"	builder = 'paketobuildpacks/builder:tiny'", "	environment = ['BP_NATIVE_IMAGE': 'true']", "}");
+		assertThat(gradleBuild(createProjectRequest("native"))).lines().containsSequence(
+				"tasks.named('bootBuildImage') {", "	builder = 'paketobuildpacks/builder:tiny'",
+				"	environment = ['BP_NATIVE_IMAGE': 'true']", "}");
 	}
 
 	@Test
@@ -124,7 +136,7 @@ class SpringNativeProjectGenerationConfigurationTests extends AbstractExtensionT
 	void gradleBuildWithJpaConfigureHibernateEnhancePlugin() {
 		assertThat(gradleBuild(createProjectRequest("native", "data-jpa"))).hasPlugin("org.hibernate.orm").lines()
 				.containsSequence(// @formatter:off
-				"hibernate {",
+				"tasks.named('hibernate') {",
 				"	enhance {",
 				"		enableLazyInitialization = true",
 				"		enableDirtyTracking = true",
@@ -136,8 +148,10 @@ class SpringNativeProjectGenerationConfigurationTests extends AbstractExtensionT
 	}
 
 	@Test
-	void mavenBuildConfigureSpringBootPlugin() {
-		assertThat(mavenPom(createProjectRequest("native"))).lines().containsSequence(
+	void mavenBuildWithNative0Dot9ConfigureSpringBootPlugin() {
+		ProjectRequest request = createProjectRequest("native");
+		request.setBootVersion("2.4.7");
+		assertThat(mavenPom(request)).lines().containsSequence(
 		// @formatter:off
 				"			<plugin>",
 				"				<groupId>org.springframework.boot</groupId>",
@@ -150,6 +164,50 @@ class SpringNativeProjectGenerationConfigurationTests extends AbstractExtensionT
 				"						</env>",
 				"					</image>",
 				"				</configuration>",
+				"			</plugin>");
+		// @formatter:on
+	}
+
+	@Test
+	void mavenBuildWithNative0Dot10ConfigureSpringBootPlugin() {
+		ProjectRequest request = createProjectRequest("native");
+		request.setBootVersion("2.5.0");
+		assertThat(mavenPom(request)).lines().containsSequence(
+		// @formatter:off
+				"			<plugin>",
+				"				<groupId>org.springframework.boot</groupId>",
+				"				<artifactId>spring-boot-maven-plugin</artifactId>",
+				"				<configuration>",
+				"					<classifier>${repackage.classifier}</classifier>",
+				"					<image>",
+				"						<builder>paketobuildpacks/builder:tiny</builder>",
+				"						<env>",
+				"							<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>",
+				"						</env>",
+				"					</image>",
+				"				</configuration>",
+				"			</plugin>");
+		// @formatter:on
+	}
+
+	@Test
+	void mavenBuildWithNative0Dot11ConfigureNativeMavenPlugin() {
+		ProjectRequest request = createProjectRequest("native");
+		request.setBootVersion("2.6.0-M3");
+		assertThat(mavenPom(request)).lines().containsSequence(
+		// @formatter:off
+				"			<plugin>",
+				"				<groupId>org.springframework.experimental</groupId>",
+				"				<artifactId>spring-aot-maven-plugin</artifactId>",
+				"				<version>${spring-native.version}</version>",
+				"				<executions>",
+				"					<execution>",
+				"						<id>generate</id>",
+				"						<goals>",
+				"							<goal>generate</goal>",
+				"						</goals>",
+				"					</execution>",
+				"				</executions>",
 				"			</plugin>");
 		// @formatter:on
 	}
@@ -184,6 +242,13 @@ class SpringNativeProjectGenerationConfigurationTests extends AbstractExtensionT
 				"				</executions>",
 				"			</plugin>");
 		// @formatter:on
+	}
+
+	private ProjectRequest createNativeProjectRequest(String... dependencies) {
+		ProjectRequest projectRequest = createProjectRequest(dependencies);
+		projectRequest.getDependencies().add(0, "native");
+		projectRequest.setBootVersion("2.6.8");
+		return projectRequest;
 	}
 
 }

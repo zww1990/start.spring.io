@@ -84,6 +84,22 @@ class SpringNativeHelpDocumentCustomizerTests extends AbstractExtensionTests {
 	}
 
 	@Test
+	void gradleWithKotlinDslAddsWarning() {
+		ProjectRequest request = createProjectRequest("native", "web");
+		request.setType("gradle-project");
+		request.setLanguage("kotlin");
+		assertHelpDocument(request).contains("The native build tools is not configured with the Kotlin DSL");
+	}
+
+	@Test
+	void gradleWithGroovyDslAddsWarning() {
+		ProjectRequest request = createProjectRequest("native", "web");
+		request.setType("gradle-project");
+		request.setLanguage("java");
+		assertHelpDocument(request).doesNotContain("The native build tools is not configured with the Kotlin DSL");
+	}
+
+	@Test
 	void nativeSectionWithGradleUseGradleCommand() {
 		assertHelpDocument("gradle-project", "native").contains("$ ./gradlew bootBuildImage");
 	}
@@ -125,6 +141,21 @@ class SpringNativeHelpDocumentCustomizerTests extends AbstractExtensionTests {
 	void nativeSectionWithSeveralUnsupportedEntriesAddWarning() {
 		assertHelpDocument("maven-project", "native", "web-services", "jersey").contains(
 				"The following dependencies are not known to work with Spring Native: 'Spring Web Services, Jersey'. As a result, your application may not work as expected.");
+	}
+
+	@Test
+	void nativeSectionWithNativeBuildtoolsAddsDedicatedSection() {
+		ProjectRequest request = createProjectRequest("native");
+		request.setBootVersion("2.5.1");
+		assertHelpDocument(request).contains("Lightweight Container with Cloud Native Buildpacks",
+				"Executable with Native Build Tools");
+	}
+
+	@Test
+	void nativeSectionWithoutNativeBuildtoolsDoesNotAddDedicatedSection() {
+		ProjectRequest request = createProjectRequest("native");
+		request.setBootVersion("2.4.5");
+		assertHelpDocument(request).doesNotContain("Executable with Native Build Tools");
 	}
 
 	private TextAssert assertHelpDocument(ProjectRequest request) {

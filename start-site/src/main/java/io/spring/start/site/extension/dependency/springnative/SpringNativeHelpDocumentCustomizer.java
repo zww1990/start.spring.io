@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.spring.initializr.generator.buildsystem.Build;
+import io.spring.initializr.generator.buildsystem.BuildSystem;
+import io.spring.initializr.generator.buildsystem.gradle.GradleBuildSystem;
 import io.spring.initializr.generator.buildsystem.maven.MavenBuild;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.spring.documentation.HelpDocument;
@@ -46,16 +48,25 @@ class SpringNativeHelpDocumentCustomizer implements HelpDocumentCustomizer {
 
 	private final String springNativeVersion;
 
+	private final String nativeBuildToolsVersion;
+
 	SpringNativeHelpDocumentCustomizer(InitializrMetadata metadata, ProjectDescription description, Build build,
 			String springNativeVersion) {
 		this.metadata = metadata;
 		this.description = description;
 		this.build = build;
 		this.springNativeVersion = (springNativeVersion != null) ? springNativeVersion : "current";
+		this.nativeBuildToolsVersion = (springNativeVersion != null)
+				? SpringNativeBuildtoolsVersionResolver.resolve(springNativeVersion) : null;
 	}
 
 	@Override
 	public void customize(HelpDocument document) {
+		BuildSystem buildSystem = this.description.getBuildSystem();
+		if (buildSystem instanceof GradleBuildSystem
+				&& buildSystem.dialect().equals(GradleBuildSystem.DIALECT_KOTLIN)) {
+			handleKotlinDslWarning(document);
+		}
 		boolean mavenBuild = this.build instanceof MavenBuild;
 		String springAotUrl = String.format(
 				"https://docs.spring.io/spring-native/docs/%s/reference/htmlsingle/#spring-aot-%s",
@@ -64,9 +75,26 @@ class SpringNativeHelpDocumentCustomizer implements HelpDocumentCustomizer {
 		handleUnsupportedDependencies(document);
 		Map<String, Object> model = new HashMap<>();
 		model.put("version", this.springNativeVersion);
-		model.put("buildImageCommand", mavenBuild ? "./mvnw spring-boot:build-image" : "./gradlew bootBuildImage");
-		model.put("runImageCommand", createRunImageCommand());
-		document.addSection("spring-native", model);
+		// Cloud native buildpacks
+		model.put("cnbBuildImageCommand", mavenBuild ? "./mvnw spring-boot:build-image" : "./gradlew bootBuildImage");
+		model.put("cnbRunImageCommand", createRunImageCommand());
+		// Native buildtools plugin
+		model.put("nbtBuildImageCommand", mavenBuild ? "./mvnw package -Pnative" : "./gradlew nativeBuild");
+		model.put("nbtRunImageCommand", String.format("%s/%s", mavenBuild ? "target" : "build/native-image",
+				this.build.getSettings().getArtifact()));
+
+		String templateName = (this.nativeBuildToolsVersion != null) ? "spring-native" : "spring-native-0.9.x";
+		document.addSection(templateName, model);
+	}
+
+	private void handleKotlinDslWarning(HelpDocument document) {
+		String docUrl = String.format(
+				"https://docs.spring.io/spring-native/docs/%s/reference/htmlsingle/#_add_the_native_build_tools_plugin",
+				this.springNativeVersion);
+		String item = String.format(
+				"The native build tools is not configured with the Kotlin DSL, check [the documentation](%s) for more details.",
+				docUrl);
+		document.getWarnings().addItem(item);
 	}
 
 	private String createRunImageCommand() {

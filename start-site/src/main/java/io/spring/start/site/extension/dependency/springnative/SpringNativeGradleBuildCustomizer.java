@@ -29,7 +29,7 @@ import org.springframework.core.Ordered;
 abstract class SpringNativeGradleBuildCustomizer implements BuildCustomizer<GradleBuild>, Ordered {
 
 	@Override
-	public void customize(GradleBuild build) {
+	public final void customize(GradleBuild build) {
 		String springNativeVersion = build.dependencies().get("native").getVersion().getValue();
 
 		// AOT plugin
@@ -40,11 +40,18 @@ abstract class SpringNativeGradleBuildCustomizer implements BuildCustomizer<Grad
 
 		// Spring Boot plugin
 		customizeSpringBootPlugin(build);
+
+		// Additional customizations
+		customize(build, springNativeVersion);
 	}
 
 	@Override
 	public int getOrder() {
 		return Ordered.LOWEST_PRECEDENCE - 10;
+	}
+
+	protected void customize(GradleBuild build, String springNativeVersion) {
+
 	}
 
 	protected abstract void customizeSpringBootPlugin(GradleBuild build);
