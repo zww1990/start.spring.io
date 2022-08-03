@@ -35,8 +35,8 @@ const config = {
   output: {
     path: path.resolve(__dirname, 'public'),
     publicPath: '/',
-    filename: 'main-[id].js',
-    chunkFilename: 'chunk-[id].js',
+    filename: 'main.[id].[fullhash].js',
+    chunkFilename: '[id].[chunkhash].js',
   },
   module: {
     rules: [
@@ -55,7 +55,7 @@ const config = {
           {
             loader: 'file-loader',
             options: {
-              name: '[name].[ext]',
+              name: '[hash].[ext]',
               outputPath: 'fonts/',
             },
           },
@@ -99,7 +99,7 @@ const config = {
       description: `Initializr generates spring boot project with just what you need to start quickly!`,
       background_color: '#6db33f',
       inject: true,
-      fingerprints: false,
+      fingerprints: true,
       ios: true,
       start_url: '/',
       crossorigin: null,
