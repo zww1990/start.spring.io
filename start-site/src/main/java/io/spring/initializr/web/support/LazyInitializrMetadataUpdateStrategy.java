@@ -6,17 +6,22 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.spring.initializr.generator.version.Version;
 import io.spring.initializr.metadata.DefaultMetadataElement;
 
 /**
  * 惰性初始化器元数据更新策略
- * @author home
+ * 
+ * @author zhang weiwei
+ * @since 2022年8月3日,下午4:39:26
  */
 public class LazyInitializrMetadataUpdateStrategy extends SaganInitializrMetadataUpdateStrategy {
 	private static final Logger log = LoggerFactory.getLogger(LazyInitializrMetadataUpdateStrategy.class);

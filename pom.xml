@@ -28,7 +28,8 @@
 		<module>start-site</module>
 	</modules>
 
-	<!-- <profiles>
+	<!--
+	<profiles>
 		<profile>
 			<id>verification</id>
 			<modules>
@@ -44,7 +45,8 @@
 				<module>start-site-verification</module>
 			</modules>
 		</profile>
-	</profiles> -->
+	</profiles>
+	-->
 
 	<dependencyManagement>
 		<dependencies>
@@ -71,7 +73,8 @@
 	<build>
 		<pluginManagement>
 			<plugins>
-				<!-- <plugin>
+				<!--
+				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>flatten-maven-plugin</artifactId>
 					<version>1.1.0</version>
@@ -122,7 +125,8 @@
 							<version>${spring-javaformat.version}</version>
 						</dependency>
 					</dependencies>
-				</plugin> -->
+				</plugin>
+				-->
 				<plugin>
 					<groupId>com.github.eirslett</groupId>
 					<artifactId>frontend-maven-plugin</artifactId>
@@ -134,7 +138,8 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		<!-- <plugins>
+		<!--
+		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>flatten-maven-plugin</artifactId>
@@ -159,7 +164,8 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins> -->
+		</plugins>
+		-->
 	</build>
 
 	<repositories>

@@ -53,11 +53,13 @@
 			<artifactId>ehcache</artifactId>
 		</dependency>
 
+		<!-- 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 		</dependency>
+		-->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -74,14 +76,16 @@
 	<build>
 		<finalName>start-site</finalName>
 		<plugins>
-			<!-- <plugin>
+			<!--
+			<plugin>
 				<groupId>io.spring.javaformat</groupId>
 				<artifactId>spring-javaformat-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-			</plugin> -->
+			</plugin>
+			-->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -106,10 +110,12 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- <plugin>
+			<!--
+			<plugin>
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
-			</plugin> -->
+			</plugin>
+			-->
 		</plugins>
 	</build>
 
