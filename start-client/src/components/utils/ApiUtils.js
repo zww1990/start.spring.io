@@ -10,6 +10,7 @@ const PROPERTIES_MAPPING_URL = {
   language: 'language',
   platformVersion: 'boot',
   packaging: 'meta.packaging',
+  propertyFile: 'meta.propertyFile',
   jvmVersion: 'meta.java',
   groupId: 'meta.group',
   artifactId: 'meta.artifact',
@@ -80,6 +81,7 @@ export const parseParams = (values, queryParams, lists) => {
           case 'project':
           case 'language':
           case 'meta.packaging':
+          case 'meta.propertyFile':
           case 'meta.java': {
             const list = get(lists, key, [])
             const res = list.find(a => a.key.toLowerCase() === value)
@@ -225,6 +227,10 @@ export const getLists = json => {
         key: `${packaging.id}`,
         text: `${packaging.name}`,
       })),
+      propertyFile: get(json, 'propertyFile.values', []).map(propertyFile => ({
+        key: `${propertyFile.id}`,
+        text: `${propertyFile.name}`,
+      })),
     },
     dependencies: deps,
   }
@@ -241,6 +247,7 @@ export const getDefaultValues = json => {
       artifact: get(json, 'artifactId.default'),
       description: get(json, 'description.default'),
       packaging: get(json, 'packaging.default'),
+      propertyFile: get(json, 'propertyFile.default'),
       packageName: get(json, 'packageName.default'),
       java: get(json, 'javaVersion.default'),
     },
@@ -277,6 +284,7 @@ export const getProject = function getProject(url, values, config) {
       description: get(values, 'meta.description'),
       packageName: get(values, 'meta.packageName'),
       packaging: get(values, 'meta.packaging'),
+      propertyFile: get(values, 'meta.propertyFile'),
       javaVersion: get(values, 'meta.java'),
     })
     let paramsDependencies = get(values, 'dependencies', [])
