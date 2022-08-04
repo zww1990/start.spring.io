@@ -1408,6 +1408,14 @@
       { "id": "groovy", "name": "Groovy" }
     ]
   },
+  "propertyFile": {
+    "type": "single-select",
+    "default": "yml",
+    "values": [
+      { "id": "yml", "name": "yml" },
+      { "id": "properties", "name": "properties" }
+    ]
+  },
   "bootVersion": {
     "type": "single-select",
     "default": "2.2.0.RELEASE",

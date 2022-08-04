@@ -143,6 +143,15 @@ function Fields({
                 }}
               />
               <FieldRadio
+                id='input-propertyFile'
+                value={get(values, 'meta.propertyFile')}
+                text='Property file'
+                options={get(config, 'lists.meta.propertyFile')}
+                onChange={value => {
+                  update({ meta: { propertyFile: value } })
+                }}
+              />
+              <FieldRadio
                 id='input-java'
                 value={get(values, 'meta.java')}
                 text='Java'

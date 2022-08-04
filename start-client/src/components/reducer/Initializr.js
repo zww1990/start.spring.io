@@ -16,6 +16,7 @@ export const defaultInitializrContext = {
       artifact: '',
       description: '',
       packaging: '',
+      propertyFile: '',
       packageName: '',
       java: '',
     },

@@ -64,6 +64,11 @@ export default function Loading() {
                 <Placeholder type='radio' width='20px' />
                 <Placeholder type='radio' width='20px' />
               </div>
+              <div className='control control-inline control-placeholder' style={{ height: 30 }}>
+                <span className='placeholder-label' style={{ marginRight: 20 }}>Property file</span>
+                <Placeholder type='radio' width='20px' />
+                <Placeholder type='radio' width='20px' />
+              </div>
               <div
                 className='control control-inline control-placeholder'
                 style={{ height: 30 }}

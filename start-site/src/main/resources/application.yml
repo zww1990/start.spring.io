@@ -1656,6 +1656,13 @@ initializr:
     - name : 2.1.1.
       id: 2.1.1.RELEASE
       default: true
+  propertyFiles:
+    - name: yml
+      id: yml
+      default: true
+    - name: properties
+      id: properties
+      default: false
 
 ---
 
