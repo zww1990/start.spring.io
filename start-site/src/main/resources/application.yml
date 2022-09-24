@@ -50,7 +50,7 @@ initializr:
           - compatibilityRange: "[2.6.0.M1,2.7.0-M1)"
             version: 2.6.8
           - compatibilityRange: "[2.7.0.M1,3.0.0-M1)"
-            version: 2.7.3
+            version: 2.7.4
           - compatibilityRange: "[3.0.0-M1,3.1.0-M1)"
             version: 3.0.0-M4
       solace-spring-boot:
@@ -93,7 +93,7 @@ initializr:
             version: 2021.0.0-RC1
             repositories: spring-milestones
           - compatibilityRange: "[2.6.1,3.0.0-M1)"
-            version: 2021.0.3
+            version: 2021.0.4
           - compatibilityRange: "[3.0.0-M1,3.0.0-M2)"
             version: 2022.0.0-M1
             repositories: spring-milestones
@@ -151,9 +151,9 @@ initializr:
           - compatibilityRange: "[2.5.0-M1,2.6.0-M1)"
             version: 1.5.14
           - compatibilityRange: "[2.6.0-M1,2.7.0-M1)"
-            version: 1.6.10
+            version: 1.6.11
           - compatibilityRange: "[2.7.0-M1,3.0.0-M1)"
-            version: 1.7.2
+            version: 1.7.3
           - compatibilityRange: "[3.0.0-M1,3.1.0-M1)"
             version: 2.0.0-M4
             repositories: spring-milestones
@@ -163,7 +163,7 @@ initializr:
         versionProperty: spring-shell.version
         mappings:
           - compatibilityRange: "[2.7.0,3.0.0-M1)"
-            version: 2.1.0
+            version: 2.1.1
       testcontainers:
         groupId: org.testcontainers
         artifactId: testcontainers-bom
@@ -175,9 +175,9 @@ initializr:
         versionProperty: vaadin.version
         mappings:
           - compatibilityRange: "[2.1.0.RELEASE,2.6.0-M1)"
-            version: 14.8.13
+            version: 14.8.17
           - compatibilityRange: "[2.6.0-M1,2.8.0-M1)"
-            version: 23.1.4
+            version: 23.2.1
       wavefront:
         groupId: com.wavefront
         artifactId: wavefront-spring-boot-bom
@@ -192,7 +192,7 @@ initializr:
           - compatibilityRange: "[2.7.0-M1,3.0.0-M1)"
             version: 2.3.0
     gradle:
-      dependency-management-plugin-version: 1.0.12.RELEASE
+      dependency-management-plugin-version: 1.0.14.RELEASE
     kotlin:
       mappings:
         - compatibilityRange: "[1.5.0.RELEASE,2.0.0.M1)"
@@ -513,7 +513,7 @@ initializr:
           description: Okta specific configuration for Spring Security/Spring Boot OAuth2 features. Enable your Spring Boot application to work with Okta via OAuth 2.0/OIDC.
           groupId: com.okta.spring
           artifactId: okta-spring-boot-starter
-          compatibilityRange: "[2.1.2.RELEASE,2.7.0-M1)"
+          compatibilityRange: "[2.1.2.RELEASE,3.0.0-M1)"
           mappings:
             - compatibilityRange: "[2.2.0.RELEASE,2.4.0-M1)"
               version: 1.4.0
@@ -521,8 +521,8 @@ initializr:
               version: 1.5.1
             - compatibilityRange: "[2.4.1,2.5.0-M1)"
               version: 2.0.1
-            - compatibilityRange: "[2.5.0-M1,2.7.0-M1)"
-              version: 2.1.5
+            - compatibilityRange: "[2.5.0-M1,3.0.0-M1)"
+              version: 2.1.6
           links:
             - rel: guide
               href: https://github.com/okta/samples-java-spring/tree/master/okta-hosted-login
@@ -928,7 +928,7 @@ initializr:
             - compatibilityRange: "[2.6.0.M1,2.7.0-M1)"
               version: 3.17.0
             - compatibilityRange: "[2.7.0.M1,3.0.0-M1)"
-              version: 3.18.0
+              version: 3.18.1
           description: Apache Camel is an open source integration framework that empowers you to quickly and easily integrate various systems consuming or producing data.
           groupId: org.apache.camel.springboot
           artifactId: camel-spring-boot-starter
@@ -1029,7 +1029,7 @@ initializr:
               description: Building a RESTful Web Service with Spring Boot Actuator
             - rel: reference
               href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#actuator
-        - name: Codecentric's Spring Boot Admin (Client)
+        - name: codecentric's Spring Boot Admin (Client)
           id: codecentric-spring-boot-admin-client
           groupId: de.codecentric
           artifactId: spring-boot-admin-starter-client
@@ -1039,7 +1039,7 @@ initializr:
           links:
             - rel: reference
               href: https://codecentric.github.io/spring-boot-admin/current/#getting-started
-        - name: Codecentric's Spring Boot Admin (Server)
+        - name: codecentric's Spring Boot Admin (Server)
           id: codecentric-spring-boot-admin-server
           groupId: de.codecentric
           artifactId: spring-boot-admin-starter-server
@@ -1479,6 +1479,7 @@ initializr:
               description: Deploying a Spring Boot app to Azure
             - rel: reference
               href: https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html
+              description: Spring Cloud Azure Reference Documentation
             - rel: sample
               href: https://aka.ms/spring/samples
               description: Azure Samples
@@ -1488,8 +1489,11 @@ initializr:
           artifactId: spring-cloud-azure-starter-active-directory
           description: Spring Security integration with Azure Active Directory for authentication.
           links:
+            - rel: guide
+              href: https://aka.ms/spring/msdocs/aad
+              description: Securing a Java Web App with the Spring Boot Starter for Azure Active Directory
             - rel: reference
-              href: https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html#authentication
+              href: https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html#spring-security-with-azure-active-directory
             - rel: sample
               href: https://aka.ms/spring/samples/latest/aad
               description: Azure Active Directory Sample
@@ -1499,17 +1503,26 @@ initializr:
           artifactId: spring-cloud-azure-starter-data-cosmos
           description: Fully managed NoSQL database service for modern app development, including Spring Data support.
           links:
+            - rel: guide
+              href: https://aka.ms/spring/msdocs/cosmos
+              description: How to use Spring Boot Starter with Azure Cosmos DB SQL API
             - rel: reference
               href: https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html#spring-data-support
             - rel: sample
               href: https://aka.ms/spring/samples/latest/cosmos
               description: Azure Cosmos DB Sample
         - name: Azure Key Vault
-          id: azure-keyvault-secrets
+          id: azure-keyvault
           groupId: com.azure.spring
-          artifactId: spring-cloud-azure-starter-keyvault-secrets
-          description: Manage application secrets.
+          artifactId: spring-cloud-azure-starter-keyvault
+          description: All key vault features are supported, e.g. manage application secrets and certificates.
           links:
+            - rel: guide
+              href: https://aka.ms/spring/msdocs/keyvault
+              description: Read Secrets from Azure Key Vault in a Spring Boot Application
+            - rel: guide
+              href: https://aka.ms/spring/msdocs/keyvault/certificates
+              description: Securing Spring Boot Applications with Azure Key Vault Certificates
             - rel: reference
               href: https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html#secret-management
             - rel: sample
@@ -1518,9 +1531,12 @@ initializr:
         - name: Azure Storage
           id: azure-storage
           groupId: com.azure.spring
-          artifactId: spring-cloud-azure-starter-storage-blob
-          description: Azure Storage service integration.
+          artifactId: spring-cloud-azure-starter-storage
+          description: All Storage features are supported, e.g. blob, fileshare and queue.
           links:
+            - rel: guide
+              href: https://aka.ms/spring/msdocs/storage
+              description: How to use the Spring Boot starter for Azure Storage
             - rel: reference
               href: https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html#resource-handling
             - rel: sample
@@ -1630,7 +1646,7 @@ initializr:
       id: war
       default: false
   javaVersions:
-    - id: 18
+    - id: 19
       default: false
     - id: 17
       default: false
