@@ -1602,7 +1602,7 @@ initializr:
         build: gradle
         dialect: groovy
         format: project
-      default: true
+      default: false
       action: /starter.zip
     - name: Gradle - Kotlin
       id: gradle-project-kotlin
@@ -1627,7 +1627,7 @@ initializr:
       tags:
         build: maven
         format: project
-      default: false
+      default: true
       action: /starter.zip
     - name: Maven POM
       id: maven-build
@@ -1648,12 +1648,12 @@ initializr:
     - id: 19
       default: false
     - id: 17
-      default: false
+      default: true
     - id: 11
       default: false
     - id: 1.8
       name: 8
-      default: true
+      default: false
   languages:
     - name: Java
       id: java
