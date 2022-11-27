@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2020 the original author or authors.
+ * Copyright 2012-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,28 @@
 
 package io.spring.start.site.extension.dependency.observability;
 
-import java.util.Arrays;
-import java.util.List;
-
 import io.spring.initializr.generator.buildsystem.Build;
+import io.spring.initializr.generator.buildsystem.Dependency;
+import io.spring.initializr.generator.buildsystem.DependencyScope;
 import io.spring.initializr.generator.spring.build.BuildCustomizer;
 
 /**
- * Add the actuator dependency if necessary if an observability library has been selected.
+ * Configures distributed tracing if necessary.
  *
  * @author Stephane Nicoll
  */
-class ObservabilityBuildCustomizer implements BuildCustomizer<Build> {
-
-	private static final List<String> MICROMETER_REGISTRY_IDS = Arrays.asList("datadog", "graphite", "influx",
-			"new-relic");
+class ObservabilityDistributedTracingBuildCustomizer implements BuildCustomizer<Build> {
 
 	@Override
 	public void customize(Build build) {
-		if (!build.dependencies().has("actuator")
-				&& build.dependencies().ids().anyMatch(MICROMETER_REGISTRY_IDS::contains)) {
-			build.dependencies().add("actuator");
+		// Zipkin without distributed tracing make no sense
+		if (build.dependencies().has("zipkin") && !build.dependencies().has("distributed-tracing")) {
+			build.dependencies().add("distributed-tracing");
+		}
+		if (build.dependencies().has("wavefront") && build.dependencies().has("distributed-tracing")) {
+			build.dependencies().add("wavefront-tracing-reporter",
+					Dependency.withCoordinates("io.micrometer", "micrometer-tracing-reporter-wavefront")
+							.scope(DependencyScope.RUNTIME));
 		}
 	}
 
