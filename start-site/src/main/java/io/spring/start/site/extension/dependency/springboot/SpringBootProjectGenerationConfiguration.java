@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2020 the original author or authors.
+ * Copyright 2012-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,9 @@ import io.spring.initializr.generator.buildsystem.gradle.GradleBuildSystem;
 import io.spring.initializr.generator.buildsystem.maven.MavenBuildSystem;
 import io.spring.initializr.generator.condition.ConditionalOnBuildSystem;
 import io.spring.initializr.generator.condition.ConditionalOnRequestedDependency;
-import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
-import io.spring.initializr.generator.spring.dependency.devtools.DevToolsGradleBuildCustomizer;
-import io.spring.initializr.generator.spring.dependency.devtools.DevToolsMavenBuildCustomizer;
+import io.spring.initializr.generator.spring.build.gradle.DevelopmentOnlyDependencyGradleBuildCustomizer;
+import io.spring.initializr.generator.spring.build.maven.OptionalDependencyMavenBuildCustomizer;
 
 import org.springframework.context.annotation.Bean;
 
@@ -31,24 +30,41 @@ import org.springframework.context.annotation.Bean;
  * {@link ProjectGenerationConfiguration} for customizations relevant for Spring Boot.
  *
  * @author Stephane Nicoll
+ * @author Moritz Halbritter
  */
 @ProjectGenerationConfiguration
 public class SpringBootProjectGenerationConfiguration {
 
 	private static final String DEVTOOLS_ID = "devtools";
 
+	private static final String DOCKER_COMPOSE_ID = "docker-compose";
+
 	@Bean
 	@ConditionalOnRequestedDependency(DEVTOOLS_ID)
 	@ConditionalOnBuildSystem(MavenBuildSystem.ID)
-	public DevToolsMavenBuildCustomizer devToolsMavenBuildCustomizer() {
-		return new DevToolsMavenBuildCustomizer(DEVTOOLS_ID);
+	public OptionalDependencyMavenBuildCustomizer devToolsMavenBuildCustomizer() {
+		return new OptionalDependencyMavenBuildCustomizer(DEVTOOLS_ID);
 	}
 
 	@Bean
 	@ConditionalOnRequestedDependency(DEVTOOLS_ID)
 	@ConditionalOnBuildSystem(GradleBuildSystem.ID)
-	public DevToolsGradleBuildCustomizer devToolsGradleBuildCustomizer(ProjectDescription projectDescription) {
-		return new DevToolsGradleBuildCustomizer(projectDescription.getPlatformVersion(), DEVTOOLS_ID);
+	public DevelopmentOnlyDependencyGradleBuildCustomizer devToolsGradleBuildCustomizer() {
+		return new DevelopmentOnlyDependencyGradleBuildCustomizer(DEVTOOLS_ID);
+	}
+
+	@Bean
+	@ConditionalOnRequestedDependency(DOCKER_COMPOSE_ID)
+	@ConditionalOnBuildSystem(MavenBuildSystem.ID)
+	public OptionalDependencyMavenBuildCustomizer dockerComposeMavenBuildCustomizer() {
+		return new OptionalDependencyMavenBuildCustomizer(DOCKER_COMPOSE_ID);
+	}
+
+	@Bean
+	@ConditionalOnRequestedDependency(DOCKER_COMPOSE_ID)
+	@ConditionalOnBuildSystem(GradleBuildSystem.ID)
+	public DevelopmentOnlyDependencyGradleBuildCustomizer dockerComposeGradleBuildCustomizer() {
+		return new DevelopmentOnlyDependencyGradleBuildCustomizer(DOCKER_COMPOSE_ID);
 	}
 
 }

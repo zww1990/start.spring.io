@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 the original author or authors.
+ * Copyright 2012-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.spring.build.gradle.ConditionalOnGradleVersion;
 import io.spring.initializr.metadata.InitializrMetadata;
-import io.spring.start.site.extension.dependency.graphql.SpringGraphQlBuildCustomizer;
 import io.spring.start.site.extension.dependency.liquibase.LiquibaseProjectContributor;
 import io.spring.start.site.extension.dependency.lombok.LombokGradleBuildCustomizer;
+import io.spring.start.site.extension.dependency.mybatis.MyBatisTestBuildCustomizer;
 import io.spring.start.site.extension.dependency.okta.OktaHelpDocumentCustomizer;
 import io.spring.start.site.extension.dependency.reactor.ReactorTestBuildCustomizer;
 import io.spring.start.site.extension.dependency.springbatch.SpringBatchTestBuildCustomizer;
@@ -45,6 +45,7 @@ import org.springframework.context.annotation.Bean;
  * @author Madhura Bhave
  * @author Stephane Nicoll
  * @author Eddú Meléndez
+ * @author Kazuki Shimizu
  */
 @ProjectGenerationConfiguration
 public class DependencyProjectGenerationConfiguration {
@@ -73,19 +74,13 @@ public class DependencyProjectGenerationConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnRequestedDependency("graphql")
-	public SpringGraphQlBuildCustomizer graphQlBuildCustomizer() {
-		return new SpringGraphQlBuildCustomizer(this.metadata);
-	}
-
-	@Bean
 	@ConditionalOnRequestedDependency("batch")
 	public SpringBatchTestBuildCustomizer batchTestBuildCustomizer() {
 		return new SpringBatchTestBuildCustomizer();
 	}
 
 	@Bean
-	@ConditionalOnGradleVersion({ "6", "7" })
+	@ConditionalOnGradleVersion({ "6", "7", "8" })
 	@ConditionalOnBuildSystem(GradleBuildSystem.ID)
 	@ConditionalOnRequestedDependency("lombok")
 	public LombokGradleBuildCustomizer lombokGradleBuildCustomizer() {
@@ -119,6 +114,12 @@ public class DependencyProjectGenerationConfiguration {
 	@ConditionalOnRequestedDependency("okta")
 	public OktaHelpDocumentCustomizer oktaHelpDocumentCustomizer(MustacheTemplateRenderer templateRenderer) {
 		return new OktaHelpDocumentCustomizer(templateRenderer);
+	}
+
+	@Bean
+	@ConditionalOnRequestedDependency("mybatis")
+	public MyBatisTestBuildCustomizer mybatisTestBuildCustomizer() {
+		return new MyBatisTestBuildCustomizer();
 	}
 
 }

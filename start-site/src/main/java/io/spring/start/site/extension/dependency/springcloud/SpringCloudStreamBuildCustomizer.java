@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 the original author or authors.
+ * Copyright 2012-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,9 @@ import io.spring.initializr.generator.buildsystem.Build;
 import io.spring.initializr.generator.buildsystem.Dependency;
 import io.spring.initializr.generator.buildsystem.DependencyScope;
 import io.spring.initializr.generator.buildsystem.maven.MavenBuild;
+import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.spring.build.BuildCustomizer;
+import io.spring.initializr.generator.version.Version;
 
 /**
  * Determine the appropriate Spring Cloud stream dependency to use based on the selected
@@ -32,38 +34,62 @@ import io.spring.initializr.generator.spring.build.BuildCustomizer;
  *
  * @author Stephane Nicoll
  * @author Madhura Bhave
+ * @author Brian Clozel
  */
 class SpringCloudStreamBuildCustomizer implements BuildCustomizer<Build> {
+
+	private final ProjectDescription description;
+
+	SpringCloudStreamBuildCustomizer(ProjectDescription description) {
+		this.description = description;
+	}
 
 	@Override
 	public void customize(Build build) {
 		if (hasDependency("cloud-stream", build) || hasDependency("cloud-bus", build)) {
 			if (hasDependency("amqp", build)) {
-				build.dependencies().add("cloud-stream-binder-rabbit", "org.springframework.cloud",
-						"spring-cloud-stream-binder-rabbit", DependencyScope.COMPILE);
+				build.dependencies()
+					.add("cloud-stream-binder-rabbit", "org.springframework.cloud", "spring-cloud-stream-binder-rabbit",
+							DependencyScope.COMPILE);
 			}
 			if (hasDependency("kafka", build)) {
-				build.dependencies().add("cloud-stream-binder-kafka", "org.springframework.cloud",
-						"spring-cloud-stream-binder-kafka", DependencyScope.COMPILE);
+				build.dependencies()
+					.add("cloud-stream-binder-kafka", "org.springframework.cloud", "spring-cloud-stream-binder-kafka",
+							DependencyScope.COMPILE);
 			}
 		}
 		// Spring Cloud Stream specific
 		if (hasDependency("cloud-stream", build)) {
 			if (hasDependency("kafka-streams", build)) {
-				build.dependencies().add("cloud-stream-binder-kafka-streams", "org.springframework.cloud",
-						"spring-cloud-stream-binder-kafka-streams", DependencyScope.COMPILE);
+				build.dependencies()
+					.add("cloud-stream-binder-kafka-streams", "org.springframework.cloud",
+							"spring-cloud-stream-binder-kafka-streams", DependencyScope.COMPILE);
 			}
-			// TODO: https://github.com/spring-io/initializr/issues/1159
-			if (build instanceof MavenBuild) {
-				build.dependencies().add("cloud-stream-test",
-						Dependency.withCoordinates("org.springframework.cloud", "spring-cloud-stream")
-								.classifier("test-binder").type("test-jar").scope(DependencyScope.TEST_COMPILE));
+			if (isSpringBoot3x()) {
+				build.dependencies()
+					.add("cloud-stream-test",
+							Dependency.withCoordinates("org.springframework.cloud", "spring-cloud-stream-test-binder")
+								.scope(DependencyScope.TEST_COMPILE));
+			}
+			else if (build instanceof MavenBuild) {
+				// TODO: https://github.com/spring-io/initializr/issues/1159
+				build.dependencies()
+					.add("cloud-stream-test",
+							Dependency.withCoordinates("org.springframework.cloud", "spring-cloud-stream")
+								.classifier("test-binder")
+								.type("test-jar")
+								.scope(DependencyScope.TEST_COMPILE));
 			}
 		}
 	}
 
 	protected boolean hasDependency(String id, Build build) {
 		return build.dependencies().has(id);
+	}
+
+	protected boolean isSpringBoot3x() {
+		Version platformVersion = this.description.getPlatformVersion();
+		return platformVersion.compareTo(Version.parse("3.0.0-M1")) > 0;
 	}
 
 }

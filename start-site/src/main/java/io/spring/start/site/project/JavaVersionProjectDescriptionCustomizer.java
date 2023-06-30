@@ -18,7 +18,6 @@ package io.spring.start.site.project;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 
 import io.spring.initializr.generator.buildsystem.gradle.GradleBuildSystem;
 import io.spring.initializr.generator.language.Language;
@@ -55,11 +54,11 @@ public class JavaVersionProjectDescriptionCustomizer implements ProjectDescripti
 
 	private static final VersionRange SPRING_BOOT_2_6_12_OR_LATER = VersionParser.DEFAULT.parseRange("2.6.12");
 
+	private static final VersionRange SPRING_BOOT_2_7_10_OR_LATER = VersionParser.DEFAULT.parseRange("2.7.10");
+
 	private static final VersionRange SPRING_BOOT_3_0_0_OR_LATER = VersionParser.DEFAULT.parseRange("3.0.0-M1");
 
 	private static final VersionRange GRADLE_6 = VersionParser.DEFAULT.parseRange("2.2.2.RELEASE");
-
-	private static final VersionRange Spring_NATIVE_011 = VersionParser.DEFAULT.parseRange("2.6.0-M3");
 
 	@Override
 	public void customize(MutableProjectDescription description) {
@@ -68,7 +67,6 @@ public class JavaVersionProjectDescriptionCustomizer implements ProjectDescripti
 			updateTo(description, "1.8");
 			return;
 		}
-		springNativeHandler().accept(description);
 		Integer javaGeneration = determineJavaGeneration(javaVersion);
 		if (javaGeneration == null) {
 			return;
@@ -123,7 +121,7 @@ public class JavaVersionProjectDescriptionCustomizer implements ProjectDescripti
 			}
 		}
 		if (javaGeneration == 18) {
-			// Java 17 support as of Spring Boot 2.5.11
+			// Java 18 support as of Spring Boot 2.5.11
 			if (!SPRING_BOOT_2_5_11_OR_LATER.match(platformVersion)) {
 				updateTo(description, "17");
 			}
@@ -138,8 +136,23 @@ public class JavaVersionProjectDescriptionCustomizer implements ProjectDescripti
 			}
 		}
 		if (javaGeneration == 19) {
-			// Java 18 support as of Spring Boot 2.6.12
+			// Java 19 support as of Spring Boot 2.6.12
 			if (!SPRING_BOOT_2_6_12_OR_LATER.match(platformVersion)) {
+				updateTo(description, "17");
+			}
+			// Kotlin support to be determined
+			if (description.getLanguage() instanceof KotlinLanguage) {
+				if (!SPRING_BOOT_2_6_0_OR_LATER.match(platformVersion)) {
+					updateTo(description, "11");
+				}
+				else {
+					updateTo(description, "17");
+				}
+			}
+		}
+		if (javaGeneration == 20) {
+			// Java 20 support as of Spring Boot 2.7.10
+			if (!SPRING_BOOT_2_7_10_OR_LATER.match(platformVersion)) {
 				updateTo(description, "17");
 			}
 			// Kotlin support to be determined
@@ -165,23 +178,11 @@ public class JavaVersionProjectDescriptionCustomizer implements ProjectDescripti
 				return 8;
 			}
 			int generation = Integer.parseInt(javaVersion);
-			return ((generation > 8 && generation <= 19) ? generation : null);
+			return ((generation > 8 && generation <= 20) ? generation : null);
 		}
 		catch (NumberFormatException ex) {
 			return null;
 		}
-	}
-
-	private Consumer<MutableProjectDescription> springNativeHandler() {
-		return (description) -> {
-			if (!description.getRequestedDependencies().containsKey("native")) {
-				return;
-			}
-			if ("1.8".equals(description.getLanguage().jvmVersion())
-					&& Spring_NATIVE_011.match(description.getPlatformVersion())) {
-				updateTo(description, "11");
-			}
-		};
 	}
 
 }
