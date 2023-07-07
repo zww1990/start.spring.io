@@ -23,7 +23,7 @@ import io.spring.initializr.metadata.DefaultMetadataElement;
  * @author zhang weiwei
  * @since 2022年8月3日,下午4:39:26
  */
-public class LazyInitializrMetadataUpdateStrategy extends SaganInitializrMetadataUpdateStrategy {
+public class LazyInitializrMetadataUpdateStrategy extends SpringIoInitializrMetadataUpdateStrategy {
 	private static final Logger log = LoggerFactory.getLogger(LazyInitializrMetadataUpdateStrategy.class);
 	private final RestTemplate restTemplate;
 	private final ObjectMapper objectMapper;
@@ -64,7 +64,7 @@ public class LazyInitializrMetadataUpdateStrategy extends SaganInitializrMetadat
 
 	private boolean isCompatibleVersion(DefaultMetadataElement versionMetadata) {
 		Version version = Version.parse(versionMetadata.getId());
-		return (version.getMajor() == 2 && version.getMinor() > 5) || (version.getMajor() >= 3);
+		return (version.getMajor() == 2 && version.getMinor() > 6) || (version.getMajor() >= 3);
 	}
 
 }

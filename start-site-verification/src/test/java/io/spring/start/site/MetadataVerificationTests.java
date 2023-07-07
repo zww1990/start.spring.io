@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2020 the original author or authors.
+ * Copyright 2012-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,11 +93,15 @@ class MetadataVerificationTests {
 					dependency.getVersion(), boms, repositories);
 		}
 		catch (RuntimeException ex) {
+			// ActiveMQ starter does not exist with Spring Boot 3.0
+			if (ex.getMessage().contains("rg.springframework.boot:spring-boot-starter-activemq:pom:")) {
+				return null;
+			}
 			// Known issue with Spring Cloud Contract to be fixed in the next release
 			// See
 			// https://github.com/spring-cloud/spring-cloud-contract/commit/13c7d477fbbc856b319600874a11aabcef283df7
 			if (ex.getMessage()
-					.contains("org.springframework.cloud:spring-cloud-starter-contract-verifier:pom:2.2.3.RELEASE")) {
+				.contains("org.springframework.cloud:spring-cloud-starter-contract-verifier:pom:2.2.3.RELEASE")) {
 				return null;
 			}
 			throw ex;
@@ -113,7 +117,7 @@ class MetadataVerificationTests {
 					List<BillOfMaterials> boms = getBoms(dependency, bootVersion);
 					List<RemoteRepository> repositories = getRepositories(dependency, bootVersion, boms);
 					parameters
-							.add(Arguments.of(dependency, boms, repositories, bootVersion + " " + dependency.getId()));
+						.add(Arguments.of(dependency, boms, repositories, bootVersion + " " + dependency.getId()));
 				}
 			}
 		}
@@ -172,8 +176,12 @@ class MetadataVerificationTests {
 	}
 
 	private Collection<Version> bootVersions() {
-		return this.metadata.getBootVersions().getContent().stream().map(DefaultMetadataElement::getId)
-				.map(VersionParser.DEFAULT::parse).collect(Collectors.toList());
+		return this.metadata.getBootVersions()
+			.getContent()
+			.stream()
+			.map(DefaultMetadataElement::getId)
+			.map(VersionParser.DEFAULT::parse)
+			.collect(Collectors.toList());
 	}
 
 	private Collection<DependencyGroup> groups() {
@@ -181,8 +189,10 @@ class MetadataVerificationTests {
 	}
 
 	private Collection<Dependency> dependenciesForBootVersion(DependencyGroup group, Version bootVersion) {
-		return group.getContent().stream().filter((dependency) -> dependency.match(bootVersion))
-				.collect(Collectors.toList());
+		return group.getContent()
+			.stream()
+			.filter((dependency) -> dependency.match(bootVersion))
+			.collect(Collectors.toList());
 	}
 
 }

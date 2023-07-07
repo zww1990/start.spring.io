@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 the original author or authors.
+ * Copyright 2012-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Tests for {@link SpringBootProjectGenerationConfiguration}.
  *
  * @author Stephane Nicoll
+ * @author Moritz Halbritter
  */
 class SpringBootProjectGenerationConfigurationTests extends AbstractExtensionTests {
 
@@ -33,8 +34,9 @@ class SpringBootProjectGenerationConfigurationTests extends AbstractExtensionTes
 	void gradleWithDevtoolsConfigureBuild() {
 		ProjectRequest request = createProjectRequest("devtools");
 		request.setBootVersion("2.4.8");
-		assertThat(gradleBuild(request)).lines().doesNotContain("configurations {")
-				.contains("\tdevelopmentOnly 'org.springframework.boot:spring-boot-devtools'");
+		assertThat(gradleBuild(request)).lines()
+			.doesNotContain("configurations {")
+			.contains("\tdevelopmentOnly 'org.springframework.boot:spring-boot-devtools'");
 	}
 
 	@Test
@@ -48,13 +50,31 @@ class SpringBootProjectGenerationConfigurationTests extends AbstractExtensionTes
 	void mavenWithDevtoolsIsOptional() {
 		ProjectRequest request = createProjectRequest("devtools");
 		assertThat(mavenPom(request)).hasText("/project/dependencies/dependency[2]/artifactId", "spring-boot-devtools")
-				.hasText("/project/dependencies/dependency[2]/optional", "true");
+			.hasText("/project/dependencies/dependency[2]/optional", "true");
 	}
 
 	@Test
 	void mavenWithoutDevtoolsDoesNotChangeOptional() {
 		ProjectRequest request = createProjectRequest("web");
 		assertThat(mavenPom(request)).doesNotContain("optional");
+	}
+
+	@Test
+	void gradleWithDockerComposeSupportUsesDevelopmentOnly() {
+		ProjectRequest request = createProjectRequest("docker-compose");
+		request.setBootVersion("3.1.0-RC1");
+		assertThat(gradleBuild(request)).lines()
+			.contains("\tdevelopmentOnly 'org.springframework.boot:spring-boot-docker-compose'");
+	}
+
+	@Test
+	void mavenWithDockerComposeSupportHasOptionalScope() {
+		ProjectRequest request = createProjectRequest("docker-compose");
+		request.setBootVersion("3.1.0-RC1");
+		assertThat(mavenPom(request))
+			.hasText("/project/dependencies/dependency[2]/artifactId", "spring-boot-docker-compose")
+			.hasText("/project/dependencies/dependency[2]/scope", "runtime")
+			.hasText("/project/dependencies/dependency[2]/optional", "true");
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 the original author or authors.
+ * Copyright 2012-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,20 +60,21 @@ class StartInitializrMetadataUpdateStrategyTests {
 	@Test
 	void eolVersionsAreRemoved() {
 		InitializrMetadata metadata = new InitializrMetadataTestBuilder().addBootVersion("0.0.9.RELEASE", true)
-				.addBootVersion("0.0.8.RELEASE", false).build();
+			.addBootVersion("0.0.8.RELEASE", false)
+			.build();
 		assertThat(metadata.getBootVersions().getDefault().getId()).isEqualTo("0.0.9.RELEASE");
 		StartInitializrMetadataUpdateStrategy provider = new StartInitializrMetadataUpdateStrategy(this.restTemplate,
 				objectMapper);
 		expectJson(metadata.getConfiguration().getEnv().getSpringBootMetadataUrl(),
-				"metadata/sagan/spring-boot-old.json");
+				"metadata/springio/spring-boot.json");
 		InitializrMetadata updatedMetadata = provider.update(metadata);
 		assertThat(updatedMetadata.getBootVersions()).isNotNull();
 		List<DefaultMetadataElement> updatedBootVersions = updatedMetadata.getBootVersions().getContent();
 		assertThat(updatedBootVersions).hasSize(4);
-		assertBootVersion(updatedBootVersions.get(0), "3.0.0 (SNAPSHOT)", false);
-		assertBootVersion(updatedBootVersions.get(1), "3.0.0 (RC2)", false);
-		assertBootVersion(updatedBootVersions.get(2), "2.7.6 (SNAPSHOT)", false);
-		assertBootVersion(updatedBootVersions.get(3), "2.7.5", true);
+		assertBootVersion(updatedBootVersions.get(0), "3.0.2 (SNAPSHOT)", false);
+		assertBootVersion(updatedBootVersions.get(1), "3.0.1", true);
+		assertBootVersion(updatedBootVersions.get(2), "2.7.8 (SNAPSHOT)", false);
+		assertBootVersion(updatedBootVersions.get(3), "2.7.7", false);
 	}
 
 	@Test
@@ -92,8 +93,9 @@ class StartInitializrMetadataUpdateStrategyTests {
 	private void expectJson(String url, String bodyPath) {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-		this.mockServer.expect(requestTo(url)).andExpect(method(HttpMethod.GET))
-				.andRespond(withStatus(HttpStatus.OK).body(new ClassPathResource(bodyPath)).headers(httpHeaders));
+		this.mockServer.expect(requestTo(url))
+			.andExpect(method(HttpMethod.GET))
+			.andRespond(withStatus(HttpStatus.OK).body(new ClassPathResource(bodyPath)).headers(httpHeaders));
 	}
 
 }

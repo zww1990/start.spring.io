@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 the original author or authors.
+ * Copyright 2012-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ObservabilityActuatorBuildCustomizerTests extends AbstractExtensionTests {
 
 	@ParameterizedTest
-	@ValueSource(strings = { "datadog", "influx", "graphite", "new-relic" })
+	@ValueSource(strings = { "datadog", "dynatrace", "influx", "graphite", "new-relic" })
 	void actuatorIsAddedWith2xMicrometerRegistries(String dependency) {
 		assertThat(generateProject("2.7.5", dependency)).mavenBuild().hasDependency(getDependency("actuator"));
 	}
@@ -42,13 +42,13 @@ class ObservabilityActuatorBuildCustomizerTests extends AbstractExtensionTests {
 	@ValueSource(strings = { "distributed-tracing", "zipkin", "wavefront" })
 	void actuatorIsNotAddedWith2xStarters(String dependency) {
 		Dependency actuator = getDependency("actuator");
-		assertThat(generateProject("2.7.5", dependency)).mavenBuild().doesNotHaveDependency(actuator.getGroupId(),
-				actuator.getArtifactId());
+		assertThat(generateProject("2.7.5", dependency)).mavenBuild()
+			.doesNotHaveDependency(actuator.getGroupId(), actuator.getArtifactId());
 	}
 
 	@ParameterizedTest
-	@ValueSource(
-			strings = { "datadog", "influx", "graphite", "new-relic", "distributed-tracing", "zipkin", "wavefront" })
+	@ValueSource(strings = { "datadog", "dynatrace", "influx", "graphite", "new-relic", "distributed-tracing", "zipkin",
+			"wavefront" })
 	void actuatorIsAddedWithObservabilityEntries(String dependency) {
 		assertThat(generateProject("3.0.0", dependency)).mavenBuild().hasDependency(getDependency("actuator"));
 	}

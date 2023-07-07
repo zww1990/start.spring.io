@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2019 the original author or authors.
+ * Copyright 2012-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,10 @@ package io.spring.start.site.extension.dependency.springamqp;
 
 import io.spring.initializr.generator.condition.ConditionalOnRequestedDependency;
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
+import io.spring.start.site.container.ComposeFileCustomizer;
+import io.spring.start.site.container.DockerServiceResolver;
+import io.spring.start.site.container.ServiceConnections.ServiceConnection;
+import io.spring.start.site.container.ServiceConnectionsCustomizer;
 
 import org.springframework.context.annotation.Bean;
 
@@ -25,14 +29,35 @@ import org.springframework.context.annotation.Bean;
  * Configuration for generation of projects that depend on Spring AMQP.
  *
  * @author Stephane Nicoll
+ * @author Stephane Nicoll
  */
 @ProjectGenerationConfiguration
 @ConditionalOnRequestedDependency("amqp")
 class SpringAmqpProjectGenerationConfiguration {
 
+	private static String TESTCONTAINERS_CLASS_NAME = "org.testcontainers.containers.RabbitMQContainer";
+
 	@Bean
 	SpringRabbitTestBuildCustomizer springAmqpTestBuildCustomizer() {
 		return new SpringRabbitTestBuildCustomizer();
+	}
+
+	@Bean
+	@ConditionalOnRequestedDependency("testcontainers")
+	ServiceConnectionsCustomizer rabbitServiceConnectionsCustomizer(DockerServiceResolver serviceResolver) {
+		return (serviceConnections) -> serviceResolver.doWith("rabbit", (service) -> serviceConnections
+			.addServiceConnection(ServiceConnection.ofContainer("rabbit", service, TESTCONTAINERS_CLASS_NAME, false)));
+	}
+
+	@Bean
+	@ConditionalOnRequestedDependency("docker-compose")
+	ComposeFileCustomizer rabbitComposeFileCustomizer(DockerServiceResolver serviceResolver) {
+		return (composeFile) -> serviceResolver.doWith("rabbit",
+				(service) -> composeFile.services()
+					.add("rabbitmq",
+							service.andThen((builder) -> builder.environment("RABBITMQ_DEFAULT_USER", "myuser")
+								.environment("RABBITMQ_DEFAULT_PASS", "secret")
+								.ports(5672))));
 	}
 
 }

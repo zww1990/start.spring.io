@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2021 the original author or authors.
+ * Copyright 2012-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,21 +25,27 @@ import io.spring.initializr.generator.spring.documentation.HelpDocumentCustomize
  * selected.
  *
  * @author Stephane Nicoll
+ * @author Brian Clozel
  */
 class WavefrontHelpDocumentCustomizer implements HelpDocumentCustomizer {
 
 	private final Build build;
 
-	WavefrontHelpDocumentCustomizer(Build build) {
+	private final String referenceLink;
+
+	WavefrontHelpDocumentCustomizer(String referenceLink, Build build) {
+		this.referenceLink = referenceLink;
 		this.build = build;
 	}
 
 	@Override
 	public void customize(HelpDocument document) {
+		document.gettingStarted().addReferenceDocLink(this.referenceLink, "Wavefront for Spring Boot documentation");
+
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.format("## Observability with Wavefront%n%n"));
-		sb.append(String.format(
-				"If you don't have a Wavefront account, the starter will create a freemium account for you.%n"));
+		sb.append(String
+			.format("If you don't have a Wavefront account, the starter will create a freemium account for you.%n"));
 		sb.append(String.format("The URL to access the Wavefront Service dashboard is logged on startup.%n"));
 
 		if (this.build.dependencies().has("web") || this.build.dependencies().has("webflux")) {

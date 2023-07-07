@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 the original author or authors.
+ * Copyright 2012-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Stephane Nicoll
  * @author Artem Bilan
+ * @author Brian Clozel
  */
 class SpringIntegrationProjectGenerationConfigurationTests extends AbstractExtensionTests {
 
@@ -42,32 +43,19 @@ class SpringIntegrationProjectGenerationConfigurationTests extends AbstractExten
 	void buildWithOnlySpringIntegration() {
 		Dependency integrationTest = integrationDependency("test");
 		integrationTest.setScope(Dependency.SCOPE_TEST);
-		assertThat(generateProject("integration")).mavenBuild().hasDependency(getDependency("integration"))
-				.hasDependency(Dependency.createSpringBootStarter("test", Dependency.SCOPE_TEST))
-				.hasDependency(integrationTest);
+		assertThat(generateProject("integration")).mavenBuild()
+			.hasDependency(getDependency("integration"))
+			.hasDependency(Dependency.createSpringBootStarter("test", Dependency.SCOPE_TEST))
+			.hasDependency(integrationTest);
 	}
 
 	@ParameterizedTest
 	@MethodSource("supportedEntries")
 	void buildWithSupportedEntries(String springBootDependencyId, String integrationModuleId) {
 		assertThat(generateProject("integration", springBootDependencyId)).mavenBuild()
-				.hasDependency(getDependency("integration"))
-				.hasDependency(Dependency.createSpringBootStarter("test", Dependency.SCOPE_TEST))
-				.hasDependency(integrationDependency(integrationModuleId));
-	}
-
-	@ParameterizedTest
-	@MethodSource("supportedEntries")
-	void linkToSupportedEntriesWhenSpringIntegrationIsPresentIsAdded(String dependencyId, String moduleId) {
-		assertHelpDocument("integration", dependencyId)
-				.contains("https://docs.spring.io/spring-integration/reference/html/" + moduleId);
-	}
-
-	@ParameterizedTest
-	@MethodSource("supportedEntries")
-	void linkToSupportedEntriesWhenSpringIntegrationIsNotPresentIsNotAdded(String dependencyId, String moduleId) {
-		assertHelpDocument(dependencyId)
-				.doesNotContain("https://docs.spring.io/spring-integration/reference/html/" + moduleId);
+			.hasDependency(getDependency("integration"))
+			.hasDependency(Dependency.createSpringBootStarter("test", Dependency.SCOPE_TEST))
+			.hasDependency(integrationDependency(integrationModuleId));
 	}
 
 	static Stream<Arguments> supportedEntries() {
@@ -83,10 +71,37 @@ class SpringIntegrationProjectGenerationConfigurationTests extends AbstractExten
 				Arguments.arguments("websocket", "stomp"), Arguments.arguments("web-services", "ws"));
 	}
 
+	@ParameterizedTest
+	@MethodSource("referenceLinks")
+	void linkToSupportedEntriesWhenSpringIntegrationIsPresentIsAdded(String dependencyId, String pageName) {
+		assertHelpDocument("integration", dependencyId)
+			.contains("https://docs.spring.io/spring-integration/reference/html/" + pageName + ".html");
+	}
+
+	@ParameterizedTest
+	@MethodSource("referenceLinks")
+	void linkToSupportedEntriesWhenSpringIntegrationIsNotPresentIsNotAdded(String dependencyId, String pageName) {
+		assertHelpDocument(dependencyId)
+			.doesNotContain("https://docs.spring.io/spring-integration/reference/html/" + pageName + ".html");
+	}
+
+	static Stream<Arguments> referenceLinks() {
+		return Stream.of(Arguments.arguments("artemis", "jms"), Arguments.arguments("amqp", "amqp"),
+				Arguments.arguments("data-jdbc", "jdbc"), Arguments.arguments("jdbc", "jdbc"),
+				Arguments.arguments("data-jpa", "jpa"), Arguments.arguments("data-mongodb", "mongodb"),
+				Arguments.arguments("data-mongodb-reactive", "mongodb"), Arguments.arguments("data-r2dbc", "r2dbc"),
+				Arguments.arguments("data-redis", "redis"), Arguments.arguments("data-redis-reactive", "redis"),
+				Arguments.arguments("kafka", "kafka"), Arguments.arguments("kafka-streams", "kafka"),
+				Arguments.arguments("mail", "mail"), Arguments.arguments("rsocket", "rsocket"),
+				Arguments.arguments("security", "security"), Arguments.arguments("web", "http"),
+				Arguments.arguments("webflux", "webflux"), Arguments.arguments("websocket", "web-sockets"),
+				Arguments.arguments("websocket", "stomp"), Arguments.arguments("web-services", "ws"));
+	}
+
 	@Test
 	void linkToSupportedEntriesWhenTwoMatchesArePresentOnlyAddLinkOnce() {
 		assertHelpDocument("testcontainers", "data-mongodb", "data-mongodb-reactive")
-				.containsOnlyOnce("https://www.testcontainers.org/modules/databases/mongodb/");
+			.containsOnlyOnce("https://www.testcontainers.org/modules/databases/mongodb/");
 	}
 
 	private static Dependency integrationDependency(String id) {

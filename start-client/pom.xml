@@ -24,8 +24,8 @@
 							<goal>install-node-and-yarn</goal>
 						</goals>
 						<configuration>
-							<nodeVersion>v14.19.3</nodeVersion>
-							<yarnVersion>v1.22.15</yarnVersion>
+							<nodeVersion>v16.20.0</nodeVersion>
+							<yarnVersion>v1.22.19</yarnVersion>
 						</configuration>
 					</execution>
 					<execution>
