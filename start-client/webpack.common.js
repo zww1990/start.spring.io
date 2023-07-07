@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const WebpackPwaManifest = require('webpack-pwa-manifest')
 const isDev = process.env.NODE_ENV === 'development'
 const CopyPlugin = require('copy-webpack-plugin')
+const TerserPlugin = require("terser-webpack-plugin")
 
 const CODE = `<script defer src="https://www.googletagmanager.com/gtag/js?id={{ID}}"></script><script>window.dataLayer=window.dataLayer || []; function gtag(){dataLayer.push(arguments);}gtag('js', new Date()); gtag('config', '{{ID}}');</script>`
 
@@ -35,8 +36,8 @@ const config = {
   output: {
     path: path.resolve(__dirname, 'public'),
     publicPath: '/',
-    filename: 'main.[id].[fullhash].js',
-    chunkFilename: '[id].[chunkhash].js',
+    filename: 'main.[name].js',
+    chunkFilename: '[name].js',
   },
   module: {
     rules: [
@@ -55,7 +56,7 @@ const config = {
           {
             loader: 'file-loader',
             options: {
-              name: '[hash].[ext]',
+              name: '[name].[ext]',
               outputPath: 'fonts/',
             },
           },
@@ -91,6 +92,9 @@ const config = {
       twitter: '@springboot',
       image: `https://start.spring.io/images/initializr-card.jpg`,
       theme: `#6db33f`,
+    }),
+    new TerserPlugin({
+      extractComments: false, //不将注释提取到单独的文件中
     }),
     //new WebpackGoogleTagManager(process.env.GOOGLE_TAGMANAGER_ID),
     new WebpackPwaManifest({
