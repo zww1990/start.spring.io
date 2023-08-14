@@ -16,10 +16,18 @@
 
 package io.spring.start.site.extension.dependency.graalvm;
 
+import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import io.spring.initializr.generator.version.Version;
 import io.spring.initializr.generator.version.VersionParser;
+import io.spring.initializr.metadata.MetadataElement;
+import io.spring.initializr.versionresolver.MavenVersionResolver;
+import io.spring.start.site.extension.AbstractExtensionTests;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -31,23 +39,33 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Stephane Nicoll
  */
-class NativeBuildtoolsVersionResolverTests {
+@TestInstance(Lifecycle.PER_CLASS)
+class NativeBuildtoolsVersionResolverTests extends AbstractExtensionTests {
+
+	private MavenVersionResolver versionResolver;
+
+	@BeforeEach
+	void createVersionResolver(@TempDir Path temp) {
+		this.versionResolver = MavenVersionResolver.withCacheLocation(temp);
+	}
 
 	@ParameterizedTest
 	@MethodSource("platformVersions")
-	void resolveNativeBuildToolsVersion(Version platformVersion, String expectedBuildToolsVersion) {
-		assertThat(NativeBuildtoolsVersionResolver.resolve(platformVersion)).isEqualTo(expectedBuildToolsVersion);
+	void resolveNativeBuildToolsVersion(Version platformVersion) {
+		assertThat(NativeBuildtoolsVersionResolver.resolve(this.versionResolver, platformVersion)).isNotNull();
 	}
 
-	private static Stream<Arguments> platformVersions() {
-		return Stream.of(versions("2.7.0", null), versions("3.0.0-M1", "0.9.14"), versions("3.0.0-RC1", "0.9.16"),
-				versions("3.0.0-RC2", "0.9.17"), versions("3.0.0", "0.9.18"), versions("3.0.1", "0.9.19"),
-				versions("3.0.3", "0.9.20"), versions("3.0.6", "0.9.21"), versions("3.0.7", "0.9.22"),
-				versions("3.1.0", "0.9.22"), versions("3.1.1", "0.9.23"));
+	private Stream<Arguments> platformVersions() {
+		return getMetadata().getBootVersions()
+			.getContent()
+			.stream()
+			.map(MetadataElement::getId)
+			.filter((candidate) -> !candidate.startsWith("2.7"))
+			.map(this::version);
 	}
 
-	private static Arguments versions(String platformVersion, String nativeBuildToolsVersion) {
-		return Arguments.of(VersionParser.DEFAULT.parse(platformVersion), nativeBuildToolsVersion);
+	private Arguments version(String platformVersion) {
+		return Arguments.of(VersionParser.DEFAULT.parse(platformVersion));
 	}
 
 }

@@ -22,7 +22,6 @@ import io.spring.initializr.generator.test.io.TextAssert;
 import io.spring.initializr.generator.test.project.ProjectStructure;
 import io.spring.initializr.web.project.ProjectRequest;
 import io.spring.start.site.extension.AbstractExtensionTests;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -58,7 +57,8 @@ class TestcontainersProjectGenerationConfigurationTests extends AbstractExtensio
 	}
 
 	static Stream<Arguments> supportedEntriesBuild() {
-		return Stream.of(Arguments.arguments("amqp", "rabbitmq"), Arguments.arguments("data-cassandra", "cassandra"),
+		return Stream.of(Arguments.arguments("amqp", "rabbitmq"), Arguments.arguments("cloud-gcp", "gcloud"),
+				Arguments.arguments("cloud-gcp-pubsub", "gcloud"), Arguments.arguments("data-cassandra", "cassandra"),
 				Arguments.arguments("data-cassandra-reactive", "cassandra"),
 				Arguments.arguments("data-couchbase", "couchbase"),
 				Arguments.arguments("data-couchbase-reactive", "couchbase"),
@@ -69,24 +69,26 @@ class TestcontainersProjectGenerationConfigurationTests extends AbstractExtensio
 				Arguments.arguments("kafka-streams", "kafka"), Arguments.arguments("mariadb", "mariadb"),
 				Arguments.arguments("mysql", "mysql"), Arguments.arguments("postgresql", "postgresql"),
 				Arguments.arguments("oracle", "oracle-xe"), Arguments.arguments("pulsar", "pulsar"),
-				Arguments.arguments("pulsar-reactive", "pulsar"), Arguments.arguments("sqlserver", "mssqlserver"));
+				Arguments.arguments("pulsar-reactive", "pulsar"), Arguments.arguments("solace", "solace"),
+				Arguments.arguments("sqlserver", "mssqlserver"));
 	}
 
 	@ParameterizedTest
 	@MethodSource("supportedEntriesHelpDocument")
 	void linkToSupportedEntriesWhenTestContainerIsPresentIsAdded(String dependencyId, String docHref) {
 		assertHelpDocument("3.0.0", "testcontainers", dependencyId)
-			.contains("https://www.testcontainers.org/modules/" + docHref);
+			.contains("https://java.testcontainers.org/modules/" + docHref);
 	}
 
 	@ParameterizedTest
 	@MethodSource("supportedEntriesHelpDocument")
 	void linkToSupportedEntriesWhenTestContainerIsNotPresentIsNotAdded(String dependencyId, String docHref) {
-		assertHelpDocument("3.0.0", dependencyId).doesNotContain("https://www.testcontainers.org/modules/" + docHref);
+		assertHelpDocument("3.0.0", dependencyId).doesNotContain("https://java.testcontainers.org/modules/" + docHref);
 	}
 
 	static Stream<Arguments> supportedEntriesHelpDocument() {
-		return Stream.of(Arguments.arguments("amqp", "rabbitmq/"),
+		return Stream.of(Arguments.arguments("amqp", "rabbitmq/"), Arguments.arguments("cloud-gcp", "gcloud/"),
+				Arguments.arguments("cloud-gcp-pubsub", "gcloud/"),
 				Arguments.arguments("cloud-starter-consul-config", "consul/"),
 				Arguments.arguments("cloud-starter-vault-config", "vault/"),
 				Arguments.arguments("data-cassandra", "databases/cassandra/"),
@@ -102,14 +104,14 @@ class TestcontainersProjectGenerationConfigurationTests extends AbstractExtensio
 				Arguments.arguments("mariadb", "databases/mariadb/"), Arguments.arguments("mysql", "databases/mysql/"),
 				Arguments.arguments("oracle", "databases/oraclexe/"),
 				Arguments.arguments("postgresql", "databases/postgres/"), Arguments.arguments("pulsar", "pulsar/"),
-				Arguments.arguments("pulsar-reactive", "pulsar/"),
+				Arguments.arguments("pulsar-reactive", "pulsar/"), Arguments.arguments("solace", "solace/"),
 				Arguments.arguments("sqlserver", "databases/mssqlserver/"));
 	}
 
 	@Test
 	void linkToSupportedEntriesWhenTwoMatchesArePresentOnlyAddLinkOnce() {
 		assertHelpDocument("3.0.0", "testcontainers", "data-mongodb", "data-mongodb-reactive")
-			.containsOnlyOnce("https://www.testcontainers.org/modules/databases/mongodb/");
+			.containsOnlyOnce("https://java.testcontainers.org/modules/databases/mongodb/");
 	}
 
 	@Test
@@ -155,6 +157,7 @@ class TestcontainersProjectGenerationConfigurationTests extends AbstractExtensio
 					import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 					import org.springframework.context.annotation.Bean
 					import org.testcontainers.containers.GenericContainer
+					import org.testcontainers.utility.DockerImageName
 
 					@TestConfiguration(proxyBeanMethods = false)
 					class TestDemoApplication {
@@ -162,7 +165,7 @@ class TestcontainersProjectGenerationConfigurationTests extends AbstractExtensio
 						@Bean
 						@ServiceConnection(name = "redis")
 						GenericContainer redisContainer() {
-							new GenericContainer<>("redis:latest").withExposedPorts(6379)
+							new GenericContainer<>(DockerImageName.parse("redis:latest")).withExposedPorts(6379)
 						}
 
 						static void main(String[] args) {
@@ -187,6 +190,7 @@ class TestcontainersProjectGenerationConfigurationTests extends AbstractExtensio
 					import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 					import org.springframework.context.annotation.Bean;
 					import org.testcontainers.containers.GenericContainer;
+					import org.testcontainers.utility.DockerImageName;
 
 					@TestConfiguration(proxyBeanMethods = false)
 					public class TestDemoApplication {
@@ -194,7 +198,7 @@ class TestcontainersProjectGenerationConfigurationTests extends AbstractExtensio
 						@Bean
 						@ServiceConnection(name = "redis")
 						GenericContainer<?> redisContainer() {
-							return new GenericContainer<>("redis:latest").withExposedPorts(6379);
+							return new GenericContainer<>(DockerImageName.parse("redis:latest")).withExposedPorts(6379);
 						}
 
 						public static void main(String[] args) {
@@ -206,7 +210,6 @@ class TestcontainersProjectGenerationConfigurationTests extends AbstractExtensio
 	}
 
 	@Test
-	@Disabled
 	void testApplicationWithKotlinAndGenericContainerIsContributed() {
 		ProjectRequest request = createProjectRequest("testcontainers", "data-redis");
 		request.setBootVersion("3.1.1");
@@ -221,14 +224,15 @@ class TestcontainersProjectGenerationConfigurationTests extends AbstractExtensio
 					import org.springframework.boot.with
 					import org.springframework.context.annotation.Bean
 					import org.testcontainers.containers.GenericContainer
+					import org.testcontainers.utility.DockerImageName
 
 					@TestConfiguration(proxyBeanMethods = false)
-					public class TestDemoApplication {
+					class TestDemoApplication {
 
 						@Bean
 						@ServiceConnection(name = "redis")
 						fun redisContainer(): GenericContainer<*> {
-							return GenericContainer("redis:latest").withExposedPorts(6379)
+							return GenericContainer(DockerImageName.parse("redis:latest")).withExposedPorts(6379)
 						}
 
 					}
@@ -253,6 +257,7 @@ class TestcontainersProjectGenerationConfigurationTests extends AbstractExtensio
 					import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 					import org.springframework.context.annotation.Bean
 					import org.testcontainers.containers.CassandraContainer
+					import org.testcontainers.utility.DockerImageName
 
 					@TestConfiguration(proxyBeanMethods = false)
 					class TestDemoApplication {
@@ -260,7 +265,7 @@ class TestcontainersProjectGenerationConfigurationTests extends AbstractExtensio
 						@Bean
 						@ServiceConnection
 						CassandraContainer cassandraContainer() {
-							new CassandraContainer<>("cassandra:latest")
+							new CassandraContainer<>(DockerImageName.parse("cassandra:latest"))
 						}
 
 						static void main(String[] args) {
@@ -285,6 +290,7 @@ class TestcontainersProjectGenerationConfigurationTests extends AbstractExtensio
 					import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 					import org.springframework.context.annotation.Bean;
 					import org.testcontainers.containers.CassandraContainer;
+					import org.testcontainers.utility.DockerImageName;
 
 					@TestConfiguration(proxyBeanMethods = false)
 					public class TestDemoApplication {
@@ -292,7 +298,7 @@ class TestcontainersProjectGenerationConfigurationTests extends AbstractExtensio
 						@Bean
 						@ServiceConnection
 						CassandraContainer<?> cassandraContainer() {
-							return new CassandraContainer<>("cassandra:latest");
+							return new CassandraContainer<>(DockerImageName.parse("cassandra:latest"));
 						}
 
 						public static void main(String[] args) {
@@ -304,7 +310,6 @@ class TestcontainersProjectGenerationConfigurationTests extends AbstractExtensio
 	}
 
 	@Test
-	@Disabled
 	void testApplicationWithKotlinAndSpecificContainerIsContributed() {
 		ProjectRequest request = createProjectRequest("testcontainers", "data-cassandra");
 		request.setBootVersion("3.1.1");
@@ -319,14 +324,15 @@ class TestcontainersProjectGenerationConfigurationTests extends AbstractExtensio
 					import org.springframework.boot.with
 					import org.springframework.context.annotation.Bean
 					import org.testcontainers.containers.CassandraContainer
+					import org.testcontainers.utility.DockerImageName
 
 					@TestConfiguration(proxyBeanMethods = false)
-					public class TestDemoApplication {
+					class TestDemoApplication {
 
 						@Bean
 						@ServiceConnection
 						fun cassandraContainer(): CassandraContainer<*> {
-							return CassandraContainer("cassandra:latest")
+							return CassandraContainer(DockerImageName.parse("cassandra:latest"))
 						}
 
 					}

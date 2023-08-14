@@ -32,8 +32,10 @@ public class SimpleDockerServiceResolver implements DockerServiceResolver {
 
 	public SimpleDockerServiceResolver() {
 		this.dockerServices = new HashMap<>();
-		this.dockerServices.put("elasticsearch", elasticsearch());
+		this.dockerServices.put("activeMQ", activeMQ());
 		this.dockerServices.put("cassandra", cassandra());
+		this.dockerServices.put("elasticsearch", elasticsearch());
+		this.dockerServices.put("kafka", kafka());
 		this.dockerServices.put("mariaDb", mariaDb());
 		this.dockerServices.put("mongoDb", mongoDb());
 		this.dockerServices.put("mysql", mysql());
@@ -45,14 +47,23 @@ public class SimpleDockerServiceResolver implements DockerServiceResolver {
 		this.dockerServices.put("zipkin", zipkin());
 	}
 
+	private static DockerService activeMQ() {
+		return new DockerService("symptoma/activemq", "latest", "https://hub.docker.com/r/symptoma/activemq", 61616);
+	}
+
+	private static DockerService cassandra() {
+		return new DockerService("cassandra", "latest", "https://hub.docker.com/_/cassandra", 9042);
+	}
+
 	private static DockerService elasticsearch() {
 		// They don't provide a 'latest' tag
 		return new DockerService("docker.elastic.co/elasticsearch/elasticsearch", "7.17.10",
 				"https://www.docker.elastic.co/r/elasticsearch", 9200, 9300);
 	}
 
-	private static DockerService cassandra() {
-		return new DockerService("cassandra", "latest", "https://hub.docker.com/_/cassandra", 9042);
+	private static DockerService kafka() {
+		return new DockerService("confluentinc/cp-kafka", "latest", "https://hub.docker.com/r/confluentinc/cp-kafka",
+				9092);
 	}
 
 	private static DockerService mariaDb() {

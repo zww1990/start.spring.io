@@ -41,6 +41,8 @@ abstract class TestcontainersModuleRegistry {
 		return create(
 				onDependencies("amqp").customizeBuild(addModule("rabbitmq"))
 					.customizeHelpDocument(addReferenceLink("RabbitMQ Module", "rabbitmq/")),
+				onDependencies("cloud-gcp", "cloud-gcp-pubsub").customizeBuild(addModule("gcloud"))
+					.customizeHelpDocument(addReferenceLink("GCloud Module", "gcloud/")),
 				onDependencies("cloud-starter-consul-config").customizeBuild(addModule("consul"))
 					.customizeHelpDocument(addReferenceLink("Consul Module", "consul/")),
 				onDependencies("cloud-starter-vault-config").customizeBuild(addModule("vault"))
@@ -71,6 +73,8 @@ abstract class TestcontainersModuleRegistry {
 					.customizeHelpDocument(addReferenceLink("Postgres Module", "databases/postgres/")),
 				onDependencies("pulsar", "pulsar-reactive").customizeBuild(addModule("pulsar"))
 					.customizeHelpDocument(addReferenceLink("Pulsar Module", "pulsar/")),
+				onDependencies("solace").customizeBuild(addModule("solace"))
+					.customizeHelpDocument(addReferenceLink("Solace Module", "solace/")),
 				onDependencies("sqlserver").customizeBuild(addModule("mssqlserver"))
 					.customizeHelpDocument(addReferenceLink("MS SQL Server Module", "databases/mssqlserver/")));
 	}
@@ -91,7 +95,7 @@ abstract class TestcontainersModuleRegistry {
 
 	private static Consumer<HelpDocument> addReferenceLink(String name, String modulePath) {
 		return (helpDocument) -> {
-			String href = String.format("https://www.testcontainers.org/modules/%s", modulePath);
+			String href = String.format("https://java.testcontainers.org/modules/%s", modulePath);
 			String description = String.format("Testcontainers %s Reference Guide", name);
 			helpDocument.gettingStarted().addReferenceDocLink(href, description);
 		};
