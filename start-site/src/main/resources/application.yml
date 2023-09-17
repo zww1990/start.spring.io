@@ -1461,8 +1461,30 @@ initializr:
               href: https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/index.html#cloud-storage
             - rel: guide
               href: https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-storage-resource-sample
+    - name: ORM
+      content:
+        - name: MyBatis-Plus
+          id: MyBatis-Plus
+          description: MyBatis-Plus（简称 MP）是一个 MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生。
+          group-id: com.baomidou
+          artifact-id: mybatis-plus-boot-starter
+          version: 3.5.3.2
+          links:
+            - rel: guide
+              href: https://baomidou.com/
+              description: MyBatis-Plus
     - name: Documentation
       content:
+        - name: Knife4j
+          id: Knife4j
+          description: Knife4j 是一个集 Swagger2 和 OpenAPI3 为一体的增强解决方案。
+          group-id: com.github.xiaoymin
+          artifact-id: knife4j-openapi3-jakarta-spring-boot-starter
+          version: 4.3.0
+          links:
+            - rel: guide
+              href: https://doc.xiaominfo.com/docs/quick-start
+              description: Knife4j
         - name: Swagger UI
           id: swagger
           description: JSON API documentation for spring based applications.
