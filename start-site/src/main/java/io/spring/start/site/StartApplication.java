@@ -20,11 +20,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.spring.initializr.versionresolver.DependencyManagementVersionResolver;
 import io.spring.initializr.web.support.LazyInitializrMetadataUpdateStrategy;
+import io.spring.initializr.versionresolver.MavenVersionResolver;
 import io.spring.start.site.container.SimpleDockerServiceResolver;
 import io.spring.start.site.project.ProjectDescriptionCustomizerConfiguration;
-import io.spring.start.site.support.CacheableDependencyManagementVersionResolver;
+import io.spring.start.site.support.CacheableMavenVersionResolver;
 import io.spring.start.site.web.HomeController;
 
 import org.springframework.boot.SpringApplication;
@@ -70,9 +70,9 @@ public class StartApplication {
 	}
 
 	@Bean
-	public DependencyManagementVersionResolver dependencyManagementVersionResolver() throws IOException {
-		return new CacheableDependencyManagementVersionResolver(DependencyManagementVersionResolver
-			.withCacheLocation(Files.createTempDirectory("version-resolver-cache-")));
+	public CacheableMavenVersionResolver mavenVersionResolver() throws IOException {
+		return new CacheableMavenVersionResolver(
+				MavenVersionResolver.withCacheLocation(Files.createTempDirectory("version-resolver-cache-")));
 	}
 
 	@Bean

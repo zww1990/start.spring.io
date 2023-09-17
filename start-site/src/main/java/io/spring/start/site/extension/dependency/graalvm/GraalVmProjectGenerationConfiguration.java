@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 the original author or authors.
+ * Copyright 2012-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package io.spring.start.site.extension.dependency.graalvm;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import io.spring.initializr.generator.buildsystem.Build;
 import io.spring.initializr.generator.buildsystem.gradle.GradleBuildSystem;
@@ -24,15 +25,21 @@ import io.spring.initializr.generator.buildsystem.maven.MavenBuildSystem;
 import io.spring.initializr.generator.condition.ConditionalOnBuildSystem;
 import io.spring.initializr.generator.condition.ConditionalOnPlatformVersion;
 import io.spring.initializr.generator.condition.ConditionalOnRequestedDependency;
+import io.spring.initializr.generator.condition.ProjectGenerationCondition;
+import io.spring.initializr.generator.language.groovy.GroovyLanguage;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.version.Version;
-import io.spring.initializr.generator.version.VersionReference;
 import io.spring.initializr.metadata.InitializrMetadata;
-import io.spring.initializr.versionresolver.DependencyManagementVersionResolver;
+import io.spring.initializr.versionresolver.MavenVersionResolver;
+import io.spring.start.site.extension.dependency.graalvm.GraalVmProjectGenerationConfiguration.CompatibleLanguageCondition;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ConditionContext;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.type.AnnotatedTypeMetadata;
+import org.springframework.util.function.SingletonSupplier;
 
 /**
  * {@link ProjectGenerationConfiguration} for generation of projects that use GraalVM.
@@ -42,12 +49,14 @@ import org.springframework.context.annotation.Configuration;
 @ProjectGenerationConfiguration
 @ConditionalOnRequestedDependency("native")
 @ConditionalOnPlatformVersion("3.0.0-M1")
+@Conditional(CompatibleLanguageCondition.class)
 class GraalVmProjectGenerationConfiguration {
 
-	private final Version platformVersion;
+	private final Supplier<String> nbtVersion;
 
-	GraalVmProjectGenerationConfiguration(ProjectDescription description) {
-		this.platformVersion = description.getPlatformVersion();
+	GraalVmProjectGenerationConfiguration(ProjectDescription description, MavenVersionResolver versionResolver) {
+		this.nbtVersion = SingletonSupplier
+			.of(() -> NativeBuildtoolsVersionResolver.resolve(versionResolver, description.getPlatformVersion()));
 	}
 
 	@Bean
@@ -64,13 +73,13 @@ class GraalVmProjectGenerationConfiguration {
 	@Bean
 	@ConditionalOnBuildSystem(value = GradleBuildSystem.ID, dialect = GradleBuildSystem.DIALECT_GROOVY)
 	GraalVmGroovyDslGradleBuildCustomizer graalVmGroovyDslGradleBuildCustomizer() {
-		return new GraalVmGroovyDslGradleBuildCustomizer(this.platformVersion);
+		return new GraalVmGroovyDslGradleBuildCustomizer(this.nbtVersion.get());
 	}
 
 	@Bean
 	@ConditionalOnBuildSystem(value = GradleBuildSystem.ID, dialect = GradleBuildSystem.DIALECT_KOTLIN)
 	GraalVmKotlinDslGradleBuildCustomizer graalVmKotlinDslGradleBuildCustomizer() {
-		return new GraalVmKotlinDslGradleBuildCustomizer(this.platformVersion);
+		return new GraalVmKotlinDslGradleBuildCustomizer(this.nbtVersion.get());
 	}
 
 	@Bean
@@ -98,19 +107,39 @@ class GraalVmProjectGenerationConfiguration {
 		@Bean
 		@ConditionalOnBuildSystem(value = GradleBuildSystem.ID, dialect = GradleBuildSystem.DIALECT_GROOVY)
 		HibernatePluginGroovyDslGradleBuildCustomizer hibernatePluginGroovyDslGradleBuildCustomizer(
-				DependencyManagementVersionResolver versionResolver) {
+				MavenVersionResolver versionResolver) {
 			return new HibernatePluginGroovyDslGradleBuildCustomizer(determineHibernateVersion(versionResolver));
 		}
 
-		private VersionReference determineHibernateVersion(DependencyManagementVersionResolver versionResolver) {
-			Map<String, String> resolve = versionResolver.resolve("org.springframework.boot",
+		@Bean
+		@ConditionalOnBuildSystem(value = GradleBuildSystem.ID, dialect = GradleBuildSystem.DIALECT_KOTLIN)
+		HibernatePluginKotlinDslGradleBuildCustomizer hibernatePluginKotlinDslGradleBuildCustomizer(
+				MavenVersionResolver versionResolver) {
+			return new HibernatePluginKotlinDslGradleBuildCustomizer(determineHibernateVersion(versionResolver));
+		}
+
+		private Version determineHibernateVersion(MavenVersionResolver versionResolver) {
+			Map<String, String> resolve = versionResolver.resolveDependencies("org.springframework.boot",
 					"spring-boot-dependencies", this.platformVersion.toString());
 			String hibernateVersion = resolve.get("org.hibernate.orm" + ":hibernate-core");
 			if (hibernateVersion == null) {
 				throw new IllegalStateException(
 						"Failed to determine Hibernate version for Spring Boot " + this.platformVersion);
 			}
-			return VersionReference.ofValue(hibernateVersion);
+			return Version.parse(hibernateVersion);
+		}
+
+	}
+
+	/**
+	 * A {@link ProjectGenerationCondition} that match for any language that isn't Groovy.
+	 */
+	static class CompatibleLanguageCondition extends ProjectGenerationCondition {
+
+		@Override
+		protected boolean matches(ProjectDescription description, ConditionContext context,
+				AnnotatedTypeMetadata metadata) {
+			return !GroovyLanguage.ID.equals(description.getLanguage().id());
 		}
 
 	}

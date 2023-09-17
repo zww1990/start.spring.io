@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2022 the original author or authors.
+ * Copyright 2012-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import io.spring.initializr.generator.buildsystem.gradle.GradleBuildSystem;
 import io.spring.initializr.generator.buildsystem.maven.MavenBuild;
 import io.spring.initializr.generator.buildsystem.maven.MavenBuildSystem;
 import io.spring.initializr.generator.condition.ConditionalOnBuildSystem;
+import io.spring.initializr.generator.condition.ConditionalOnPlatformVersion;
 import io.spring.initializr.generator.condition.ConditionalOnRequestedDependency;
 import io.spring.initializr.generator.io.template.MustacheTemplateRenderer;
 import io.spring.initializr.generator.project.ProjectDescription;
@@ -31,7 +32,7 @@ import io.spring.initializr.generator.project.ProjectDescriptionDiff;
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.project.contributor.ProjectContributor;
 import io.spring.initializr.metadata.InitializrMetadata;
-import io.spring.initializr.versionresolver.DependencyManagementVersionResolver;
+import io.spring.initializr.versionresolver.MavenVersionResolver;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -65,8 +66,7 @@ public class SpringCloudProjectGenerationConfiguration {
 	}
 
 	@Bean
-	SpringCloudProjectVersionResolver springCloudProjectVersionResolver(
-			DependencyManagementVersionResolver versionResolver) {
+	SpringCloudProjectVersionResolver springCloudProjectVersionResolver(MavenVersionResolver versionResolver) {
 		return new SpringCloudProjectVersionResolver(this.metadata, versionResolver);
 	}
 
@@ -84,6 +84,7 @@ public class SpringCloudProjectGenerationConfiguration {
 
 	@Bean
 	@ConditionalOnRequestedDependency("cloud-gateway")
+	@ConditionalOnPlatformVersion("[2.6.0,3.2.0-M1)")
 	public SpringCloudGatewayHelpDocumentCustomizer springCloudGatewayHelpDocumentCustomizer(
 			ProjectDescriptionDiff diff) {
 		return new SpringCloudGatewayHelpDocumentCustomizer(diff);
