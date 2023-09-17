@@ -50,14 +50,14 @@ initializr:
           - compatibilityRange: "[3.0.0-M1,3.1.0-M1)"
             version: 3.0.4
           - compatibilityRange: "[3.1.0-M1,3.2.0-M1)"
-            version: 3.1.1
+            version: 3.1.5
       hilla:
         groupId: dev.hilla
         artifactId: hilla-bom
         versionProperty: hilla.version
         mappings:
           - compatibilityRange: "[3.1.0-M1,3.2.0-M1)"
-            version: 2.1.4
+            version: 2.1.9
       sentry:
         groupId: io.sentry
         artifactId: sentry-bom
@@ -93,15 +93,21 @@ initializr:
             version: 2021.0.8
           - compatibilityRange: "[3.0.0,3.2.0-M1)"
             version: 2022.0.4
+          - compatibilityRange: "[3.2.0-M1,3.2.x-SNAPSHOT)"
+            version: 2023.0.0-M1
+            repositories: spring-milestones
+          - compatibilityRange: "3.2.x-SNAPSHOT"
+            version: 2023.0.0-SNAPSHOT
+            repositories: spring-snapshots
       spring-cloud-azure:
         groupId: com.azure.spring
         artifactId: spring-cloud-azure-dependencies
         versionProperty: spring-cloud-azure.version
         mappings:
           - compatibilityRange: "[2.6.0,3.0.0-M1)"
-            version: 4.10.0
+            version: 4.11.0
           - compatibilityRange: "[3.0.0-M1,3.2.0-M1)"
-            version: 5.4.0
+            version: 5.5.0
       spring-cloud-gcp:
         groupId: com.google.cloud
         artifactId: spring-cloud-gcp-dependencies
@@ -109,9 +115,9 @@ initializr:
         additionalBoms: [ spring-cloud ]
         mappings:
           - compatibilityRange: "[2.6.0,3.0.0-M1)"
-            version: 3.6.2
+            version: 3.6.3
           - compatibilityRange: "[3.0.0-M1,3.2.0-M1)"
-            version: 4.7.1
+            version: 4.7.2
       spring-cloud-services:
         groupId: io.pivotal.spring.cloud
         artifactId: spring-cloud-services-dependencies
@@ -129,8 +135,7 @@ initializr:
         artifactId: spring-modulith-bom
         mappings:
           - compatibility-range: "[3.1.0,3.2.0-M1)"
-            version: 1.0.0-RC1
-            repositories: spring-milestones
+            version: 1.0.0
       spring-shell:
         groupId: org.springframework.shell
         artifactId: spring-shell-dependencies
@@ -158,11 +163,9 @@ initializr:
           - compatibilityRange: "[2.6.0,2.7.0-M1)"
             version: 23.2.15
           - compatibilityRange: "[2.7.0-M1,3.0.0-M1)"
-            version: 23.3.18
-          - compatibilityRange: "[3.0.0-M1,3.1.0-M1)"
-            version: 24.0.11
-          - compatibilityRange: "[3.1.0-M1,3.2.0-M1)"
-            version: 24.1.4
+            version: 23.3.23
+          - compatibilityRange: "[3.0.0-M1,3.2.0-M1)"
+            version: 24.1.9
       wavefront:
         groupId: com.wavefront
         artifactId: wavefront-spring-boot-bom
@@ -173,7 +176,7 @@ initializr:
           - compatibilityRange: "[2.7.0-M1,3.0.0-M1)"
             version: 2.3.4
           - compatibilityRange: "[3.0.0-M1,3.1.0-M1)"
-            version: 3.0.1
+            version: 3.0.2
     gradle:
       dependency-management-plugin-version: 1.0.14.RELEASE
     platform:
@@ -453,7 +456,7 @@ initializr:
             - compatibilityRange: "[2.6.0,3.0.0-M1)"
               version: 2.1.6
             - compatibilityRange: "[3.0.0-M1,3.2.0-M1)"
-              version: 3.0.4
+              version: 3.0.5
           links:
             - rel: guide
               href: https://github.com/okta/samples-java-spring/tree/master/okta-hosted-login
@@ -829,11 +832,11 @@ initializr:
           compatibilityRange: "[2.6.0,3.2.0-M1)"
           mappings:
             - compatibilityRange: "[2.6.0,2.7.0-M1)"
-              version: 3.17.0
+              version: 3.14.9
             - compatibilityRange: "[2.7.0.M1,3.0.0-M1)"
               version: 3.20.6
             - compatibilityRange: "[3.0.0-M1,3.2.0-M1)"
-              version: 4.0.0-RC2
+              version: 4.0.0
           description: Apache Camel is an open source integration framework that empowers you to quickly and easily integrate various systems consuming or producing data.
           groupId: org.apache.camel.springboot
           artifactId: camel-spring-boot-starter
@@ -1089,7 +1092,6 @@ initializr:
         - name: Contract Verifier
           bom: spring-cloud
           id: cloud-contract-verifier
-          compatibilityRange: "[2.6.0,3.2.0-M1)"
           description: Moves TDD to the level of software architecture by enabling Consumer Driven Contract (CDC) development.
           groupId: org.springframework.cloud
           artifactId: spring-cloud-starter-contract-verifier
@@ -1100,7 +1102,6 @@ initializr:
         - name: Contract Stub Runner
           bom: spring-cloud
           id: cloud-contract-stub-runner
-          compatibilityRange: "[2.6.0,3.2.0-M1)"
           description: Stub Runner for HTTP/Messaging based communication. Allows creating WireMock stubs from RestDocs tests.
           groupId: org.springframework.cloud
           artifactId: spring-cloud-starter-contract-stub-runner
@@ -1131,7 +1132,6 @@ initializr:
               href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/index.html#data.nosql.mongodb.embedded
     - name: Spring Cloud
       bom: spring-cloud
-      compatibilityRange: "[2.6.0,3.2.0-M1)"
       content:
         - name: Cloud Bootstrap
           id: cloud-starter
@@ -1163,7 +1163,6 @@ initializr:
               href: https://docs.spring.io/spring-cloud-task/docs/current/reference/html/
     - name: Spring Cloud Config
       bom: spring-cloud
-      compatibilityRange: "[2.6.0,3.2.0-M1)"
       content:
         - name: Config Client
           id: cloud-config-client
@@ -1214,7 +1213,6 @@ initializr:
               description: Spring Cloud Consul Quick Start
     - name: Spring Cloud Discovery
       bom: spring-cloud
-      compatibilityRange: "[2.6.0,3.2.0-M1)"
       content:
         - name: Eureka Discovery Client
           id: cloud-eureka
@@ -1265,7 +1263,6 @@ initializr:
               href: https://docs.spring.io/spring-cloud-consul/docs/current/reference/html/#spring-cloud-consul-discovery
     - name: Spring Cloud Routing
       bom: spring-cloud
-      compatibilityRange: "[2.6.0,3.2.0-M1)"
       content:
         - name: Gateway
           id: cloud-gateway
@@ -1302,7 +1299,6 @@ initializr:
               href: https://docs.spring.io/spring-cloud-commons/docs/current/reference/html/#spring-cloud-loadbalancer
     - name: Spring Cloud Circuit Breaker
       bom: spring-cloud
-      compatibilityRange: "[2.6.0,3.2.0-M1)"
       content:
         - name: Resilience4J
           id: cloud-resilience4j
@@ -1314,7 +1310,6 @@ initializr:
               href: https://docs.spring.io/spring-cloud-circuitbreaker/docs/current/reference/html/#configuring-resilience4j-circuit-breakers
     - name: Spring Cloud Messaging
       bom: spring-cloud
-      compatibilityRange: "[2.6.0,3.2.0-M1)"
       content:
         - name: Cloud Bus
           id: cloud-bus
