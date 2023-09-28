@@ -115,9 +115,9 @@ initializr:
         additionalBoms: [ spring-cloud ]
         mappings:
           - compatibilityRange: "[2.6.0,3.0.0-M1)"
-            version: 3.6.3
+            version: 3.7.0
           - compatibilityRange: "[3.0.0-M1,3.2.0-M1)"
-            version: 4.7.2
+            version: 4.8.0
       spring-cloud-services:
         groupId: io.pivotal.spring.cloud
         artifactId: spring-cloud-services-dependencies
@@ -163,9 +163,9 @@ initializr:
           - compatibilityRange: "[2.6.0,2.7.0-M1)"
             version: 23.2.15
           - compatibilityRange: "[2.7.0-M1,3.0.0-M1)"
-            version: 23.3.23
+            version: 23.3.24
           - compatibilityRange: "[3.0.0-M1,3.2.0-M1)"
-            version: 24.1.9
+            version: 24.1.10
       wavefront:
         groupId: com.wavefront
         artifactId: wavefront-spring-boot-bom
@@ -786,30 +786,30 @@ initializr:
               href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/index.html#messaging.jms.artemis
         - name: Spring for Apache Pulsar
           id: pulsar
-          compatibilityRange: "[3.0.0,3.2.0-M1)"
-          mappings:
-            - compatibilityRange: "[3.0.0,3.2.0-M1)"
-              version: 0.2.0
+          compatibilityRange: "3.0.0"
           description: Build messaging applications with Apache Pulsar
-          groupId: org.springframework.pulsar
-          artifactId: spring-pulsar-spring-boot-starter
           links:
             - rel: reference
-              href: https://docs.spring.io/spring-pulsar/docs/0.2.x/reference/html/
+              href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/index.html#messaging.pulsar
+          mappings:
+            - compatibilityRange: "[3.0.0,3.2.0-M3)"
+              version: 0.2.0
+              groupId: org.springframework.pulsar
+              artifactId: spring-pulsar-spring-boot-starter
         - name: Spring for Apache Pulsar (Reactive)
           id: pulsar-reactive
-          compatibilityRange: "[3.0.0,3.2.0-M1)"
-          mappings:
-            - compatibilityRange: "[3.0.0,3.2.0-M1)"
-              version: 0.2.0
+          compatibilityRange: "3.0.0"
           description: Build reactive messaging applications with Apache Pulsar
           facets:
             - reactive
-          groupId: org.springframework.pulsar
-          artifactId: spring-pulsar-reactive-spring-boot-starter
           links:
             - rel: reference
-              href: https://docs.spring.io/spring-pulsar/docs/0.2.x/reference/html/#reactive-pulsar
+              href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/index.html#messaging.pulsar
+          mappings:
+            - compatibilityRange: "[3.0.0,3.2.0-M1)"
+              version: 0.2.0
+              groupId: org.springframework.pulsar
+              artifactId: spring-pulsar-reactive-spring-boot-starter
         - name: WebSocket
           id: websocket
           description: Build Servlet-based WebSocket applications with SockJS and STOMP.
@@ -836,7 +836,7 @@ initializr:
             - compatibilityRange: "[2.7.0.M1,3.0.0-M1)"
               version: 3.20.6
             - compatibilityRange: "[3.0.0-M1,3.2.0-M1)"
-              version: 4.0.0
+              version: 4.0.1
           description: Apache Camel is an open source integration framework that empowers you to quickly and easily integrate various systems consuming or producing data.
           groupId: org.apache.camel.springboot
           artifactId: camel-spring-boot-starter
@@ -1561,7 +1561,7 @@ initializr:
       id: war
       default: false
   javaVersions:
-    - id: 20
+    - id: 21
       default: false
     - id: 17
       default: true
