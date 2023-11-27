@@ -34,11 +34,12 @@ class SpringCloudContractMavenBuildCustomizerTests extends AbstractExtensionTest
 
 	@Test
 	void springCloudContractVerifierPluginAddedWhenSCCDependencyPresent() {
-		ProjectRequest projectRequest = createProjectRequest("cloud-contract-verifier");
-		assertThat(mavenPom(projectRequest)).hasDependency(getDependency("cloud-contract-verifier"))
-			.hasText("/project/build/plugins/plugin[1]/groupId", "org.springframework.cloud")
-			.hasText("/project/build/plugins/plugin[1]/artifactId", "spring-cloud-contract-maven-plugin")
-			.hasText("/project/build/plugins/plugin[1]/extensions", Boolean.toString(true));
+		ProjectRequest request = createProjectRequest("cloud-contract-verifier");
+		request.setBootVersion("3.1.0");
+		assertThat(mavenPom(request)).hasDependency(getDependency("cloud-contract-verifier"))
+			.hasText("/project/build/plugins/plugin[2]/groupId", "org.springframework.cloud")
+			.hasText("/project/build/plugins/plugin[2]/artifactId", "spring-cloud-contract-maven-plugin")
+			.hasText("/project/build/plugins/plugin[2]/extensions", Boolean.toString(true));
 	}
 
 	@Test
@@ -49,19 +50,20 @@ class SpringCloudContractMavenBuildCustomizerTests extends AbstractExtensionTest
 
 	@Test
 	void springCloudContractVerifierPluginForSpringBootWithJUnit5ByDefault() {
-		ProjectRequest projectRequest = createProjectRequest("cloud-contract-verifier");
-		projectRequest.setBootVersion("2.7.0");
-		assertThat(mavenPom(projectRequest))
-			.hasText("/project/build/plugins/plugin[1]/artifactId", "spring-cloud-contract-maven-plugin")
-			.hasText("/project/build/plugins/plugin[1]/configuration/testFramework", "JUNIT5");
+		ProjectRequest request = createProjectRequest("cloud-contract-verifier");
+		request.setBootVersion("3.1.0");
+		assertThat(mavenPom(request))
+			.hasText("/project/build/plugins/plugin[2]/artifactId", "spring-cloud-contract-maven-plugin")
+			.hasText("/project/build/plugins/plugin[2]/configuration/testFramework", "JUNIT5");
 	}
 
 	@Test
 	void springCloudContractVerifierPluginWithTestModeSetWhenWebFluxIsPresent() {
-		ProjectRequest projectRequest = createProjectRequest("cloud-contract-verifier", "webflux");
-		assertThat(mavenPom(projectRequest))
-			.hasText("/project/build/plugins/plugin[1]/artifactId", "spring-cloud-contract-maven-plugin")
-			.hasText("/project/build/plugins/plugin[1]/configuration/testMode", "WEBTESTCLIENT");
+		ProjectRequest request = createProjectRequest("cloud-contract-verifier", "webflux");
+		request.setBootVersion("3.1.0");
+		assertThat(mavenPom(request))
+			.hasText("/project/build/plugins/plugin[2]/artifactId", "spring-cloud-contract-maven-plugin")
+			.hasText("/project/build/plugins/plugin[2]/configuration/testMode", "WEBTESTCLIENT");
 	}
 
 	@Test

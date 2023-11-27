@@ -36,53 +36,28 @@ import io.spring.initializr.generator.version.VersionRange;
  */
 public class JavaVersionProjectDescriptionCustomizer implements ProjectDescriptionCustomizer {
 
-	private static final List<String> UNSUPPORTED_VERSIONS = Arrays.asList("1.6", "1.7");
+	private static final VersionRange KOTLIN_1_9_20_OR_LATER = VersionParser.DEFAULT.parseRange("3.2.0-RC2");
 
-	private static final VersionRange SPRING_BOOT_2_6_12_OR_LATER = VersionParser.DEFAULT.parseRange("2.6.12");
-
-	private static final VersionRange SPRING_BOOT_2_7_10_OR_LATER = VersionParser.DEFAULT.parseRange("2.7.10");
-
-	private static final VersionRange SPRING_BOOT_2_7_16_OR_LATER = VersionParser.DEFAULT.parseRange("2.7.16");
-
-	private static final VersionRange SPRING_BOOT_3_0_0_OR_LATER = VersionParser.DEFAULT.parseRange("3.0.0-M1");
+	private static final List<String> UNSUPPORTED_VERSIONS = Arrays.asList("1.6", "1.7", "1.8");
 
 	@Override
 	public void customize(MutableProjectDescription description) {
+		Version platformVersion = description.getPlatformVersion();
 		String javaVersion = description.getLanguage().jvmVersion();
 		if (UNSUPPORTED_VERSIONS.contains(javaVersion)) {
-			updateTo(description, "1.8");
+			updateTo(description, "17");
 			return;
 		}
 		Integer javaGeneration = determineJavaGeneration(javaVersion);
 		if (javaGeneration == null) {
 			return;
 		}
-		Version platformVersion = description.getPlatformVersion();
-		// Spring Boot 3 requires Java 17
-		if (javaGeneration < 17 && SPRING_BOOT_3_0_0_OR_LATER.match(platformVersion)) {
+		if (javaGeneration < 17) {
 			updateTo(description, "17");
-			return;
-		}
-		if (javaGeneration == 19) {
-			// Java 19 support as of Spring Boot 2.6.12
-			if (!SPRING_BOOT_2_6_12_OR_LATER.match(platformVersion)) {
-				updateTo(description, "17");
-			}
-		}
-		if (javaGeneration == 20) {
-			// Java 20 support as of Spring Boot 2.7.10
-			if (!SPRING_BOOT_2_7_10_OR_LATER.match(platformVersion)) {
-				updateTo(description, "17");
-			}
-
 		}
 		if (javaGeneration == 21) {
-			// Java 21 support as of Spring Boot 2.7.16
-			if (!SPRING_BOOT_2_7_16_OR_LATER.match(platformVersion)) {
-				updateTo(description, "17");
-			}
-			// Kotlin does not support Java 21 bytecodes yet
-			if (description.getLanguage() instanceof KotlinLanguage) {
+			// Kotlin 1.9.20 is required
+			if (description.getLanguage() instanceof KotlinLanguage && !KOTLIN_1_9_20_OR_LATER.match(platformVersion)) {
 				updateTo(description, "17");
 			}
 		}
@@ -95,11 +70,8 @@ public class JavaVersionProjectDescriptionCustomizer implements ProjectDescripti
 
 	private Integer determineJavaGeneration(String javaVersion) {
 		try {
-			if ("1.8".equals(javaVersion)) {
-				return 8;
-			}
 			int generation = Integer.parseInt(javaVersion);
-			return ((generation > 8 && generation <= 21) ? generation : null);
+			return ((generation > 9 && generation <= 21) ? generation : null);
 		}
 		catch (NumberFormatException ex) {
 			return null;
