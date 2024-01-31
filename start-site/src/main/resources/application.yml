@@ -43,15 +43,15 @@ initializr:
         artifactId: spring-boot-admin-dependencies
         versionProperty: spring-boot-admin.version
         mappings:
-          - compatibilityRange: "[3.1.0,3.2.0-M1)"
-            version: 3.1.5
+          - compatibilityRange: "[3.1.0,3.3.0-M1)"
+            version: 3.2.1
       hilla:
         groupId: dev.hilla
         artifactId: hilla-bom
         versionProperty: hilla.version
         mappings:
-          - compatibilityRange: "[3.1.0,3.2.0-M1)"
-            version: 2.4.0
+          - compatibilityRange: "[3.1.0,3.3.0-M1)"
+            version: 2.5.5
       sentry:
         groupId: io.sentry
         artifactId: sentry-bom
@@ -82,7 +82,7 @@ initializr:
         order: 50
         mappings:
           - compatibilityRange: "[3.0.0,3.2.0-M1)"
-            version: 2022.0.4
+            version: 2022.0.5
           - compatibilityRange: "[3.2.0-M1,3.2.0)"
             version: 2023.0.0-RC1
             repositories: spring-milestones
@@ -121,33 +121,35 @@ initializr:
         versionProperty: spring-modulith.version
         mappings:
           - compatibility-range: "[3.1.0,3.2.0-M1)"
-            version: 1.0.3
-          - compatibility-range: "3.2.0-M1"
-            version: 1.1.0
+            version: 1.0.5
+          - compatibility-range: "[3.2.0-M1,3.3.0-M1)"
+            version: 1.1.2
+          - compatibility-range: "3.3.0-M1"
+            version: 1.2.0-M1
+            repositories: spring-milestones
       spring-shell:
         groupId: org.springframework.shell
         artifactId: spring-shell-dependencies
         versionProperty: spring-shell.version
         mappings:
           - compatibilityRange: "[3.1.0,3.2.0-M1)"
-            version: 3.1.6
-          - compatibilityRange: "3.2.0-M1"
-            version: 3.2.0-RC1
-            repositories: spring-milestones
+            version: 3.1.7
+          - compatibilityRange: "[3.2.0-M1,3.3.0-M1)"
+            version: 3.2.0
       timefold-solver:
         groupId: ai.timefold.solver
         artifactId: timefold-solver-bom
         versionProperty: timefold-solver.version
         mappings:
-          - compatibilityRange: "[3.0.0,3.2.0-M1)"
-            version: 1.3.0
+          - compatibilityRange: "[3.0.0,3.3.0-M1)"
+            version: 1.6.0
       vaadin:
         groupId: com.vaadin
         artifactId: vaadin-bom
         versionProperty: vaadin.version
         mappings:
           - compatibilityRange: "[3.0.0,3.3.0-M1)"
-            version: 24.3.1
+            version: 24.3.3
     gradle:
       dependency-management-plugin-version: 1.0.14.RELEASE
     platform:
@@ -340,7 +342,7 @@ initializr:
         - name: Hilla
           id: hilla
           bom: hilla
-          compatibilityRange: "[3.1.0-M1,3.2.0-M1)"
+          compatibilityRange: "[3.1.0-M1,3.3.0-M1)"
           facets:
             - web
           groupId: dev.hilla
@@ -800,10 +802,12 @@ initializr:
               href: https://rsocket.io/
         - name: Apache Camel
           id: camel
-          compatibilityRange: "[3.0.0,3.2.0-M1)"
+          compatibilityRange: "[3.0.0,3.3.0-M1)"
           mappings:
             - compatibilityRange: "[3.0.0,3.2.0-M1)"
               version: 4.2.0
+            - compatibilityRange: "[3.2.0-M1,3.3.0-M1)"
+              version: 4.3.0
           description: Apache Camel is an open source integration framework that empowers you to quickly and easily integrate various systems consuming or producing data.
           groupId: org.apache.camel.springboot
           artifactId: camel-spring-boot-starter
@@ -881,6 +885,7 @@ initializr:
           id: spring-shell
           groupId: org.springframework.shell
           artifactId: spring-shell-starter
+          compatibilityRange: "[3.1.0,3.3.0-M1)"
           description: Build command line applications with spring.
           bom: spring-shell
           links:
@@ -888,12 +893,11 @@ initializr:
               href: https://spring.io/projects/spring-shell
         - name: Timefold Solver
           id: timefold-solver
-          compatibilityRange: "[2.6.0,3.2.0-M1)"
+          compatibilityRange: "[2.6.0,3.3.0-M1)"
           groupId: ai.timefold.solver
           artifactId: timefold-solver-spring-boot-starter
           description: AI solver to optimize operations and scheduling.
           bom: timefold-solver
-          starter: false
           links:
             - rel: reference
               href:  https://timefold.ai/docs/timefold-solver/latest/quickstart/spring-boot/spring-boot-quickstart#springBootJavaQuickStart
@@ -916,7 +920,7 @@ initializr:
           groupId: de.codecentric
           artifactId: spring-boot-admin-starter-client
           description: Required for your application to register with a Codecentric's Spring Boot Admin Server instance.
-          compatibilityRange: "[3.0.0,3.2.0-M1)"
+          compatibilityRange: "[3.0.0,3.3.0-M1)"
           bom: codecentric-spring-boot-admin
           links:
             - rel: reference
@@ -926,7 +930,7 @@ initializr:
           groupId: de.codecentric
           artifactId: spring-boot-admin-starter-server
           description: A community project to manage and monitor your Spring Boot applications. Provides a UI on top of the Spring Boot Actuator endpoints.
-          compatibilityRange: "[3.0.0,3.2.0-M1)"
+          compatibilityRange: "[3.0.0,3.3.0-M1)"
           bom: codecentric-spring-boot-admin
           links:
             - rel: reference
