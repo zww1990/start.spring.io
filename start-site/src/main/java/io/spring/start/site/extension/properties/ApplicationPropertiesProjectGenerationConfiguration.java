@@ -16,11 +16,9 @@
 
 package io.spring.start.site.extension.properties;
 
-import io.spring.initializr.generator.condition.ConditionalOnPropertyFile;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 
-import io.spring.initializr.generator.propertyfile.properties.Properties;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -33,7 +31,6 @@ import org.springframework.context.annotation.Bean;
 class ApplicationPropertiesProjectGenerationConfiguration {
 
 	@Bean
-//	@ConditionalOnPropertyFile(Properties.ID)
 	DefaultApplicationPropertiesCustomizer defaultApplicationPropertiesContributorCustomizer(
 			ProjectDescription projectDescription) {
 		return new DefaultApplicationPropertiesCustomizer(projectDescription);
