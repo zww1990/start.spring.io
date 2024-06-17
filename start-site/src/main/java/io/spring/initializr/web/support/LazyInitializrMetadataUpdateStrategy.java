@@ -27,6 +27,7 @@ public class LazyInitializrMetadataUpdateStrategy extends SpringIoInitializrMeta
 	private static final Logger log = LoggerFactory.getLogger(LazyInitializrMetadataUpdateStrategy.class);
 	private final RestTemplate restTemplate;
 	private final ObjectMapper objectMapper;
+	private static final Version MINIMUM_BOOT_VERSION = Version.parse("3.2.0");
 
 	public LazyInitializrMetadataUpdateStrategy(RestTemplate restTemplate, ObjectMapper objectMapper) {
 		super(restTemplate, objectMapper);
@@ -64,7 +65,7 @@ public class LazyInitializrMetadataUpdateStrategy extends SpringIoInitializrMeta
 
 	private boolean isCompatibleVersion(DefaultMetadataElement versionMetadata) {
 		Version version = Version.parse(versionMetadata.getId());
-		return (version.getMajor() == 2 && version.getMinor() > 6) || (version.getMajor() >= 3);
+		return version.compareTo(MINIMUM_BOOT_VERSION) >= 0;
 	}
 
 }
