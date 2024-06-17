@@ -51,12 +51,15 @@ const getPersistedOrDefault = json => {
       packaging:
         localStorage.getItem('packaging') ||
         get(json, 'defaultValues.meta').packaging,
+      propertyFile:
+        localStorage.getItem('propertyFile') ||
+        get(json, 'defaultValues.meta').propertyFile,
       java:
         localStorage.getItem('java') || get(json, 'defaultValues.meta').java,
     },
     dependencies: [],
   }
-  const checks = ['project', 'language', 'meta.java', 'meta.packaging']
+  const checks = ['project', 'language', 'meta.java', 'meta.packaging', 'meta.propertyFile']
   checks.forEach(key => {
     const item = get(json, `lists.${key}`)?.find(
       it => it.key === get(values, key)
@@ -77,6 +80,9 @@ const persist = changes => {
   }
   if (get(changes, 'meta.packaging')) {
     localStorage.setItem('packaging', get(changes, 'meta.packaging'))
+  }
+  if (get(changes, 'meta.propertyFile')) {
+    localStorage.setItem('propertyFile', get(changes, 'meta.propertyFile'))
   }
   if (get(changes, 'meta.java')) {
     localStorage.setItem('java', get(changes, 'meta.java'))

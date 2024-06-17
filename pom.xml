@@ -95,12 +95,12 @@
 	<build>
 		<pluginManagement>
 			<plugins>
-				<!--
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>flatten-maven-plugin</artifactId>
 					<version>1.5.0</version>
 				</plugin>
+				<!--
 				<plugin>
 					<groupId>io.spring.javaformat</groupId>
 					<artifactId>spring-javaformat-maven-plugin</artifactId>
@@ -166,7 +166,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		<!--
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -174,7 +173,7 @@
 				<inherited>true</inherited>
 				<executions>
 					<execution>
-						Tidy up all POMs before they are published
+						<!-- Tidy up all POMs before they are published -->
 						<id>flatten</id>
 						<phase>process-resources</phase>
 						<goals>
@@ -190,10 +189,16 @@
 							</pomElements>
 						</configuration>
 					</execution>
+					<execution>
+						<id>flatten-clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>
-		-->
 	</build>
 
 	<repositories>
