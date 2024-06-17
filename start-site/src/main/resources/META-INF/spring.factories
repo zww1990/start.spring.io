@@ -1,8 +1,10 @@
 io.spring.initializr.generator.project.ProjectGenerationConfiguration=\
 io.spring.start.site.extension.build.gradle.GradleProjectGenerationConfiguration,\
 io.spring.start.site.extension.build.maven.MavenProjectGenerationConfiguration,\
+io.spring.start.site.extension.code.kotlin.KotlinProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.DependencyProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.activemq.ActiveMQProjectGenerationConfiguration,\
+io.spring.start.site.extension.dependency.activemq.ArtemisProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.cassandra.CassandraProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.derby.DerbyProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.dgs.DgsCodegenProjectGenerationConfiguration,\
@@ -11,15 +13,16 @@ io.spring.start.site.extension.dependency.elasticsearch.ElasticsearchProjectGene
 io.spring.start.site.extension.dependency.flyway.FlywayProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.graalvm.GraalVmProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.graphql.SpringGraphQlProjectGenerationConfiguration,\
-io.spring.start.site.extension.dependency.hilla.HillaProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.mariadb.MariaDbProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.mongodb.MongoDbProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.mysql.MysqlProjectGenerationConfiguration,\
+io.spring.start.site.extension.dependency.neo4j.Neo4jProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.observability.ObservabilityProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.oracle.OracleProjectGenerationConfiguration,\
-io.spring.start.site.extension.dependency.picocli.PicocliProjectGenerationConfiguration,\
+io.spring.start.site.extension.dependency.postgresql.PgVectorProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.postgresql.PostgresqlProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.redis.RedisProjectGenerationConfiguration,\
+io.spring.start.site.extension.dependency.sbom.SbomProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.solace.SolaceProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.springamqp.SpringAmqpProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.springazure.SpringAzureProjectGenerationConfiguration,\
@@ -36,4 +39,4 @@ io.spring.start.site.extension.dependency.testcontainers.TestcontainersProjectGe
 io.spring.start.site.extension.dependency.vaadin.VaadinProjectGenerationConfiguration,\
 io.spring.start.site.extension.dependency.zipkin.ZipkinProjectGenerationConfiguration,\
 io.spring.start.site.extension.description.DescriptionProjectGenerationConfiguration,\
-io.spring.start.site.extension.code.kotlin.KotlinProjectGenerationConfiguration
+io.spring.start.site.extension.properties.ApplicationPropertiesProjectGenerationConfiguration

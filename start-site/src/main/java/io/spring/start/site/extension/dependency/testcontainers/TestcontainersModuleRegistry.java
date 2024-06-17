@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 the original author or authors.
+ * Copyright 2012-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,11 +40,17 @@ import io.spring.start.site.support.implicit.ImplicitDependency.Builder;
  */
 abstract class TestcontainersModuleRegistry {
 
-	private static final VersionRange SPRING_BOOT_3_2_0_OR_LATER = VersionParser.DEFAULT.parseRange("3.2.0");
+	private static final VersionRange SPRING_BOOT_3_3_0_M2_OR_LATER = VersionParser.DEFAULT.parseRange("3.3.0-M2");
 
 	static Iterable<ImplicitDependency> create(Version platformVersion) {
 		List<ImplicitDependency.Builder> builders = new ArrayList<>();
-		builders.add(onDependencies("amqp").customizeBuild(addModule("rabbitmq"))
+		if (SPRING_BOOT_3_3_0_M2_OR_LATER.match(platformVersion)) {
+			builders.add(onDependencies("activemq").customizeBuild(addModule("activemq"))
+				.customizeHelpDocument(addReferenceLink("ActiveMQ Module", "activemq/")));
+			builders.add(onDependencies("artemis").customizeBuild(addModule("activemq"))
+				.customizeHelpDocument(addReferenceLink("ActiveMQ Module", "activemq/")));
+		}
+		builders.add(onDependencies("amqp", "amqp-streams").customizeBuild(addModule("rabbitmq"))
 			.customizeHelpDocument(addReferenceLink("RabbitMQ Module", "rabbitmq/")));
 		builders.add(onDependencies("cloud-gcp", "cloud-gcp-pubsub").customizeBuild(addModule("gcloud"))
 			.customizeHelpDocument(addReferenceLink("GCloud Module", "gcloud/")));
@@ -60,7 +66,7 @@ abstract class TestcontainersModuleRegistry {
 			.customizeHelpDocument(addReferenceLink("Elasticsearch Container", "elasticsearch/")));
 		builders.add(onDependencies("data-mongodb", "data-mongodb-reactive").customizeBuild(addModule("mongodb"))
 			.customizeHelpDocument(addReferenceLink("MongoDB Module", "databases/mongodb/")));
-		builders.add(onDependencies("data-neo4j").customizeBuild(addModule("neo4j"))
+		builders.add(onDependencies("data-neo4j", "spring-ai-vectordb-neo4j").customizeBuild(addModule("neo4j"))
 			.customizeHelpDocument(addReferenceLink("Neo4j Module", "databases/neo4j/")));
 		builders.add(onDependencies("data-r2dbc").customizeBuild(addModule("r2dbc"))
 			.customizeHelpDocument(addReferenceLink("R2DBC support", "databases/r2dbc/")));
@@ -72,15 +78,9 @@ abstract class TestcontainersModuleRegistry {
 			.customizeHelpDocument(addReferenceLink("MariaDB Module", "databases/mariadb/")));
 		builders.add(onDependencies("mysql").customizeBuild(addModule("mysql"))
 			.customizeHelpDocument(addReferenceLink("MySQL Module", "databases/mysql/")));
-		if (SPRING_BOOT_3_2_0_OR_LATER.match(platformVersion)) {
-			builders.add(onDependencies("oracle").customizeBuild(addModule("oracle-free"))
-				.customizeHelpDocument(addReferenceLink("Oracle-Free Module", "databases/oraclefree/")));
-		}
-		else {
-			builders.add(onDependencies("oracle").customizeBuild(addModule("oracle-xe"))
-				.customizeHelpDocument(addReferenceLink("Oracle-XE Module", "databases/oraclexe/")));
-		}
-		builders.add(onDependencies("postgresql").customizeBuild(addModule("postgresql"))
+		builders.add(onDependencies("oracle").customizeBuild(addModule("oracle-free"))
+			.customizeHelpDocument(addReferenceLink("Oracle-Free Module", "databases/oraclefree/")));
+		builders.add(onDependencies("postgresql", "spring-ai-vectordb-pgvector").customizeBuild(addModule("postgresql"))
 			.customizeHelpDocument(addReferenceLink("Postgres Module", "databases/postgres/")));
 		builders.add(onDependencies("pulsar", "pulsar-reactive").customizeBuild(addModule("pulsar"))
 			.customizeHelpDocument(addReferenceLink("Pulsar Module", "pulsar/")));

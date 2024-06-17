@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 the original author or authors.
+ * Copyright 2012-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.Map;
  * @author Stephane Nicoll
  * @author Moritz Halbritter
  * @author Chris Bono
+ * @author Eddú Meléndez
  */
 public class SimpleDockerServiceResolver implements DockerServiceResolver {
 
@@ -34,14 +35,17 @@ public class SimpleDockerServiceResolver implements DockerServiceResolver {
 	public SimpleDockerServiceResolver() {
 		this.dockerServices = new HashMap<>();
 		this.dockerServices.put("activeMQ", activeMQ());
+		this.dockerServices.put("activeMQClassic", activeMQClassic());
+		this.dockerServices.put("artemis", artemis());
 		this.dockerServices.put("cassandra", cassandra());
 		this.dockerServices.put("elasticsearch", elasticsearch());
 		this.dockerServices.put("kafka", kafka());
 		this.dockerServices.put("mariaDb", mariaDb());
 		this.dockerServices.put("mongoDb", mongoDb());
 		this.dockerServices.put("mysql", mysql());
+		this.dockerServices.put("neo4j", neo4j());
 		this.dockerServices.put("oracleFree", oracleFree());
-		this.dockerServices.put("oracleXe", oracleXe());
+		this.dockerServices.put("pgvector", pgvector());
 		this.dockerServices.put("postgres", postgres());
 		this.dockerServices.put("pulsar", pulsar());
 		this.dockerServices.put("rabbit", rabbit());
@@ -53,6 +57,20 @@ public class SimpleDockerServiceResolver implements DockerServiceResolver {
 	private static DockerService activeMQ() {
 		return DockerService.withImageAndTag("symptoma/activemq")
 			.website("https://hub.docker.com/r/symptoma/activemq")
+			.ports(61616)
+			.build();
+	}
+
+	private static DockerService activeMQClassic() {
+		return DockerService.withImageAndTag("apache/activemq-classic")
+			.website("https://hub.docker.com/r/apache/activemq-classic")
+			.ports(61616)
+			.build();
+	}
+
+	private static DockerService artemis() {
+		return DockerService.withImageAndTag("apache/activemq-artemis")
+			.website("https://hub.docker.com/r/apache/activemq-artemis")
 			.ports(61616)
 			.build();
 	}
@@ -91,6 +109,10 @@ public class SimpleDockerServiceResolver implements DockerServiceResolver {
 		return DockerService.withImageAndTag("mysql").website("https://hub.docker.com/_/mysql").ports(3306).build();
 	}
 
+	private static DockerService neo4j() {
+		return DockerService.withImageAndTag("neo4j").website("https://hub.docker.com/_/neo4j").ports(7687).build();
+	}
+
 	private static DockerService oracleFree() {
 		return DockerService.withImageAndTag("gvenzl/oracle-free")
 			.website("https://hub.docker.com/r/gvenzl/oracle-free")
@@ -98,10 +120,10 @@ public class SimpleDockerServiceResolver implements DockerServiceResolver {
 			.build();
 	}
 
-	private static DockerService oracleXe() {
-		return DockerService.withImageAndTag("gvenzl/oracle-xe")
-			.website("https://hub.docker.com/r/gvenzl/oracle-xe")
-			.ports(1521)
+	private static DockerService pgvector() {
+		return DockerService.withImageAndTag("pgvector/pgvector:pg16")
+			.website("https://hub.docker.com/r/pgvector/pgvector")
+			.ports(5432)
 			.build();
 	}
 

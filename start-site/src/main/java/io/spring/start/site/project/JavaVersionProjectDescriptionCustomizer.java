@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 the original author or authors.
+ * Copyright 2012-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,10 +33,11 @@ import io.spring.initializr.generator.version.VersionRange;
  *
  * @author Stephane Nicoll
  * @author Madhura Bhave
+ * @author Moritz Halbritter
  */
 public class JavaVersionProjectDescriptionCustomizer implements ProjectDescriptionCustomizer {
 
-	private static final VersionRange KOTLIN_1_9_20_OR_LATER = VersionParser.DEFAULT.parseRange("3.2.0-RC2");
+	private static final VersionRange SPRING_BOOT_3_2_4_OR_LATER = VersionParser.DEFAULT.parseRange("3.2.4");
 
 	private static final List<String> UNSUPPORTED_VERSIONS = Arrays.asList("1.6", "1.7", "1.8");
 
@@ -55,12 +56,20 @@ public class JavaVersionProjectDescriptionCustomizer implements ProjectDescripti
 		if (javaGeneration < 17) {
 			updateTo(description, "17");
 		}
-		if (javaGeneration == 21) {
-			// Kotlin 1.9.20 is required
-			if (description.getLanguage() instanceof KotlinLanguage && !KOTLIN_1_9_20_OR_LATER.match(platformVersion)) {
-				updateTo(description, "17");
+		if (javaGeneration == 22) {
+			// Java 21 support as of Spring Boot 3.2.4
+			if (!SPRING_BOOT_3_2_4_OR_LATER.match(platformVersion)) {
+				updateTo(description, "21");
+			}
+			if (isKotlin(description)) {
+				// Kotlin 1.9.x doesn't support Java 22
+				updateTo(description, "21");
 			}
 		}
+	}
+
+	private boolean isKotlin(MutableProjectDescription description) {
+		return description.getLanguage() instanceof KotlinLanguage;
 	}
 
 	private void updateTo(MutableProjectDescription description, String jvmVersion) {
@@ -71,7 +80,7 @@ public class JavaVersionProjectDescriptionCustomizer implements ProjectDescripti
 	private Integer determineJavaGeneration(String javaVersion) {
 		try {
 			int generation = Integer.parseInt(javaVersion);
-			return ((generation > 9 && generation <= 21) ? generation : null);
+			return ((generation > 9 && generation <= 22) ? generation : null);
 		}
 		catch (NumberFormatException ex) {
 			return null;
