@@ -1,18 +1,18 @@
-import get from 'lodash.get'
+import get from 'lodash/get'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { clearAllBodyScrollLocks, disableBodyScroll } from 'body-scroll-lock'
 
 import Header from './Header'
 import { AppContext } from '../../reducer/App'
-import { IconGithub } from '../icons'
+import { IconGithub, IconHistory } from '../icons'
 
 function SideLeft() {
   const [isOpen, setIsOpen] = useState(false)
   const [lock, setLock] = useState(false)
   const wrapper = useRef(null)
 
-  const { nav, dispatch } = useContext(AppContext)
+  const { nav, histories, dispatch } = useContext(AppContext)
 
   useEffect(() => {
     if (get(wrapper, 'current') && nav) {
@@ -61,6 +61,22 @@ function SideLeft() {
                 <span className='hamburger-inner' />
               </span>
             </button>
+            {!isOpen && !lock && histories.length > 0 && (
+              <>
+                <div className='navigation-divider' />
+                <button
+                  type='button'
+                  aria-label='Menu'
+                  aria-controls='navigation'
+                  className='navigation-item'
+                  onClick={() => {
+                    dispatch({ type: 'UPDATE', payload: { history: true } })
+                  }}
+                >
+                  <IconHistory />
+                </button>
+              </>
+            )}
           </div>
           <div className='social'>
             <a
@@ -164,8 +180,8 @@ function SideLeft() {
                       >
                         Spring Initializr
                       </a>
-                    </span>{' '}
-                    <span>and</span>{' '}
+                    </span>
+                    <span>,</span>{' '}
                     <span>
                       <a
                         target='_blank'
@@ -173,6 +189,16 @@ function SideLeft() {
                         href='https://buildpacks.io/'
                       >
                         Cloud Native Buildpacks
+                      </a>
+                    </span>{' '}
+                    <span>and</span>{' '}
+                    <span>
+                      <a
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        href='https://azure.microsoft.com/en-us/products/spring-apps'
+                      >
+                        Azure Spring Apps
                       </a>
                     </span>
                   </div>

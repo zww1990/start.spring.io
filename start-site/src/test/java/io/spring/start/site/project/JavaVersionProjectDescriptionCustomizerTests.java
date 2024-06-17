@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 the original author or authors.
+ * Copyright 2012-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,17 +31,18 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Tests for {@link JavaVersionProjectDescriptionCustomizer}.
  *
  * @author Stephane Nicoll
+ * @author Moritz Halbritter
  */
 class JavaVersionProjectDescriptionCustomizerTests extends AbstractExtensionTests {
 
 	@Test
 	void javaUnknownVersionIsLeftAsIs() {
-		assertThat(mavenPom(javaProject("9999999", "3.1.0"))).hasProperty("java.version", "9999999");
+		assertThat(mavenPom(javaProject("9999999", "3.3.0"))).hasProperty("java.version", "9999999");
 	}
 
 	@Test
 	void javaInvalidVersionIsLeftAsIs() {
-		assertThat(mavenPom(javaProject("${another.version}", "3.1.0"))).hasProperty("java.version",
+		assertThat(mavenPom(javaProject("${another.version}", "3.3.0"))).hasProperty("java.version",
 				"${another.version}");
 	}
 
@@ -57,12 +58,17 @@ class JavaVersionProjectDescriptionCustomizerTests extends AbstractExtensionTest
 	@MethodSource("supportedGradleGroovyParameters")
 	void gradleGroovyBuildWithSupportedOptionsDoesNotDowngradeJavaVersion(String language, String javaVersion,
 			String springBootVersion) {
-		assertThat(gradleBuild(project(language, javaVersion, springBootVersion))).hasSourceCompatibility(javaVersion);
+		assertThat(gradleBuild(project(language, javaVersion, springBootVersion))).hasToolchainForJava(javaVersion);
 	}
 
 	@Test
-	void kotlinIsNotSupportedWithJava21AndSpringBoot31() {
-		assertThat(mavenPom(kotlinProject("21", "3.1.6"))).hasProperty("java.version", "17");
+	void java22IsNotSupportedWithBoot323() {
+		assertThat(mavenPom(javaProject("22", "3.2.3"))).hasProperty("java.version", "21");
+	}
+
+	@Test
+	void java22IsNotSupportedWithKotlin() {
+		assertThat(mavenPom(kotlinProject("22", "3.2.5"))).hasProperty("java.version", "21");
 	}
 
 	static Stream<Arguments> supportedMavenParameters() {
@@ -75,16 +81,17 @@ class JavaVersionProjectDescriptionCustomizerTests extends AbstractExtensionTest
 	}
 
 	private static Stream<Arguments> supportedJavaParameters() {
-		return Stream.of(java("17", "3.1.0"), java("19", "3.1.0"), java("20", "3.1.0"), java("21", "3.1.0"));
+		return Stream.of(java("17", "3.2.0"), java("21", "3.2.0"), java("22", "3.2.4"), java("17", "3.3.0"),
+				java("21", "3.3.0"), java("22", "3.3.0"));
 	}
 
 	private static Stream<Arguments> supportedKotlinParameters() {
-		return Stream.of(kotlin("17", "3.1.0"), kotlin("19", "3.1.0"), kotlin("20", "3.1.0"),
-				kotlin("21", "3.2.0-RC2"));
+		return Stream.of(kotlin("21", "3.2.0"), kotlin("21", "3.3.0"));
 	}
 
 	private static Stream<Arguments> supportedGroovyParameters() {
-		return Stream.of(groovy("17", "3.1.0"), groovy("19", "3.1.0"), groovy("20", "3.1.0"), groovy("21", "3.1.0"));
+		return Stream.of(groovy("21", "3.2.0"), groovy("22", "3.2.4"), groovy("21", "3.3.0-M2"),
+				groovy("22", "3.3.0-M3"));
 	}
 
 	private static Arguments java(String javaVersion, String springBootVersion) {
