@@ -125,18 +125,18 @@ initializr:
         versionProperty: spring-modulith.version
         mappings:
           - compatibilityRange: "[3.2.0,3.3.0-M1)"
-            version: 1.1.5
+            version: 1.1.6
           - compatibilityRange: "[3.3.0,3.4.0-M1)"
-            version: 1.2.0
+            version: 1.2.1
       spring-shell:
         groupId: org.springframework.shell
         artifactId: spring-shell-dependencies
         versionProperty: spring-shell.version
         mappings:
           - compatibilityRange: "[3.2.0,3.3.0-M1)"
-            version: 3.2.5
+            version: 3.2.6
           - compatibilityRange: "[3.3.0,3.4.0-M1)"
-            version: 3.3.0
+            version: 3.3.1
       timefold-solver:
         groupId: ai.timefold.solver
         artifactId: timefold-solver-bom
@@ -420,13 +420,13 @@ initializr:
               href: https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/index.html#data.nosql.ldap
         - name: Okta
           id: okta
-          compatibilityRange: "[3.2.0,3.3.0-M1)"
+          compatibilityRange: "[3.2.0,3.4.0-M1)"
           description: Okta specific configuration for Spring Security/Spring Boot OAuth2 features. Enable your Spring Boot application to work with Okta via OAuth 2.0/OIDC.
           groupId: com.okta.spring
           artifactId: okta-spring-boot-starter
           mappings:
-            - compatibilityRange: "[3.2.0,3.3.0-M1)"
-              version: 3.0.6
+            - compatibilityRange: "[3.2.0,3.4.0-M1)"
+              version: 3.0.7
           links:
             - rel: guide
               href: https://github.com/okta/samples-java-spring/tree/master/okta-hosted-login
@@ -1463,7 +1463,17 @@ initializr:
           links:
             - rel: reference
               href: https://docs.spring.io/spring-ai/reference/api/clients/mistralai-chat.html
-        - name: Neo4J Vector Database
+        - name: MongoDB Atlas Vector Database
+          id: spring-ai-vectordb-mongodb-atlas
+          group-id: org.springframework.ai
+          artifact-id: spring-ai-mongodb-atlas-store-spring-boot-starter
+          description: Spring AI vector database support for MongoDB Atlas. Is is a fully managed cloud database service that provides an easy way to deploy, operate, and scale a MongoDB database in the cloud.
+          bom: spring-ai
+          starter: true
+          links:
+            - rel: reference
+              href: https://docs.spring.io/spring-ai/reference/api/vectordbs/mongodb.html
+        - name: Neo4j Vector Database
           id: spring-ai-vectordb-neo4j
           group-id: org.springframework.ai
           artifact-id: spring-ai-neo4j-store-spring-boot-starter
