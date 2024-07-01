@@ -18,6 +18,10 @@ body.dark {
 
   #side-left .navigation-item {
     color: white;
+    transition: all 0.15s;
+    &:hover {
+      opacity: 0.7;
+    }
   }
 
   #side-right .side-container {
@@ -395,5 +399,27 @@ body.dark {
   .actions .placeholder-button-special {
     box-shadow: inset 0 0 0 2px $dark-color;
     background: $dark-background;
+  }
+
+  .modal-share .modal-header {
+    background: $dark-background;
+    border-bottom: 1px solid $dark-border;
+  }
+  .modal-history-container {
+    border: 1px solid $dark-border;
+  }
+  .modal-content {
+    background: $dark-background;
+  }
+  .modal-content .list a.item {
+    background: $dark-background-secondary;
+    color: $dark-color;
+    &:hover {
+      background: lighten($dark-background-secondary, 2);
+    }
+  }
+  .modal-action {
+    background: $dark-background;
+    border-top: 1px solid $dark-border;
   }
 }
