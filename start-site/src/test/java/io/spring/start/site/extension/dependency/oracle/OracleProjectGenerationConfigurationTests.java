@@ -29,10 +29,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Tests for {@link OracleProjectGenerationConfiguration}.
  *
  * @author Moritz Halbritter
+ * @author Eddú Meléndez
  */
 class OracleProjectGenerationConfigurationTests extends AbstractExtensionTests {
-
-	private static final String SPRING_BOOT_VERSION = "3.2.0";
 
 	@Test
 	void doesNotGenerateComposeYamlWithoutDockerCompose() {
@@ -42,16 +41,20 @@ class OracleProjectGenerationConfigurationTests extends AbstractExtensionTests {
 	}
 
 	@Test
-	void createsOracleFreeServiceWithBoot32() {
+	void createsOracleFreeService() {
 		ProjectRequest request = createProjectRequest("docker-compose", "oracle");
-		request.setBootVersion(SPRING_BOOT_VERSION);
 		assertThat(composeFile(request)).hasSameContentAs(new ClassPathResource("compose/oracle-free.yaml"));
 	}
 
 	@Test
-	void declaresOracleFreeContainerBeanWithBoot32() {
+	void createsOracleFreeServiceSpringAi() {
+		ProjectRequest request = createProjectRequest("docker-compose", "spring-ai-vectordb-oracle");
+		assertThat(composeFile(request)).hasSameContentAs(new ClassPathResource("compose/oracle-free.yaml"));
+	}
+
+	@Test
+	void declaresOracleFreeContainerBean() {
 		ProjectRequest request = createProjectRequest("testcontainers", "oracle");
-		request.setBootVersion(SPRING_BOOT_VERSION);
 		request.setLanguage("java");
 		assertThat(generateProject(request)).textFile("src/test/java/com/example/demo/TestcontainersConfiguration.java")
 			.contains("import org.testcontainers.oracle.OracleContainer;")

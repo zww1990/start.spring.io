@@ -29,6 +29,8 @@ import io.spring.initializr.generator.version.Version;
  */
 class MavenBuildSystemHelpDocumentCustomizer implements HelpDocumentCustomizer {
 
+	private static final String SPRING_BOOT_DOCS_URL = "https://docs.spring.io/spring-boot";
+
 	private final Version springBootVersion;
 
 	MavenBuildSystemHelpDocumentCustomizer(ProjectDescription description) {
@@ -41,13 +43,13 @@ class MavenBuildSystemHelpDocumentCustomizer implements HelpDocumentCustomizer {
 			.addReferenceDocLink("https://maven.apache.org/guides/index.html", "Official Apache Maven documentation");
 		String referenceGuideUrl = generateReferenceGuideUrl();
 		document.gettingStarted().addReferenceDocLink(referenceGuideUrl, "Spring Boot Maven Plugin Reference Guide");
-		String buildImageSection = referenceGuideUrl + "#build-image";
+		String buildImageSection = referenceGuideUrl + "/build-image.html";
 		document.gettingStarted().addReferenceDocLink(buildImageSection, "Create an OCI image");
 	}
 
 	private String generateReferenceGuideUrl() {
-		String baseUrlFormat = "https://docs.spring.io/spring-boot/docs/%s/maven-plugin/reference/html/";
-		return String.format(baseUrlFormat, this.springBootVersion);
+		String baseUrlFormat = SPRING_BOOT_DOCS_URL + "/%s/maven-plugin";
+		return baseUrlFormat.formatted(this.springBootVersion);
 	}
 
 }

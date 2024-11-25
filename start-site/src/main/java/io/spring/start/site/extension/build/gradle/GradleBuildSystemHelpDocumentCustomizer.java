@@ -29,6 +29,8 @@ import io.spring.initializr.generator.version.Version;
  */
 class GradleBuildSystemHelpDocumentCustomizer implements HelpDocumentCustomizer {
 
+	private static final String SPRING_BOOT_DOCS_URL = "https://docs.spring.io/spring-boot";
+
 	private final Version springBootVersion;
 
 	GradleBuildSystemHelpDocumentCustomizer(ProjectDescription description) {
@@ -42,14 +44,14 @@ class GradleBuildSystemHelpDocumentCustomizer implements HelpDocumentCustomizer 
 					"Gradle Build Scans – insights for your project's build");
 		document.gettingStarted().addReferenceDocLink("https://docs.gradle.org", "Official Gradle documentation");
 		document.gettingStarted()
-			.addReferenceDocLink(
-					String.format("https://docs.spring.io/spring-boot/docs/%s/gradle-plugin/reference/html/",
-							this.springBootVersion),
-					"Spring Boot Gradle Plugin Reference Guide");
+			.addReferenceDocLink(generateReferenceGuideUrl(), "Spring Boot Gradle Plugin Reference Guide");
 		document.gettingStarted()
-			.addReferenceDocLink(String.format(
-					"https://docs.spring.io/spring-boot/docs/%s/gradle-plugin/reference/html/#build-image",
-					this.springBootVersion), "Create an OCI image");
+			.addReferenceDocLink(generateReferenceGuideUrl() + "/packaging-oci-image.html", "Create an OCI image");
+	}
+
+	private String generateReferenceGuideUrl() {
+		String baseUrlFormat = SPRING_BOOT_DOCS_URL + "/%s/gradle-plugin";
+		return baseUrlFormat.formatted(this.springBootVersion);
 	}
 
 }

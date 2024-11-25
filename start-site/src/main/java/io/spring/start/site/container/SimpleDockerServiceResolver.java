@@ -37,20 +37,28 @@ public class SimpleDockerServiceResolver implements DockerServiceResolver {
 		this.dockerServices.put("activeMQ", activeMQ());
 		this.dockerServices.put("activeMQClassic", activeMQClassic());
 		this.dockerServices.put("artemis", artemis());
+		this.dockerServices.put("azurite", azurite());
 		this.dockerServices.put("cassandra", cassandra());
+		this.dockerServices.put("chroma", chroma());
 		this.dockerServices.put("elasticsearch", elasticsearch());
 		this.dockerServices.put("kafka", kafka());
+		this.dockerServices.put("kafka-native", kafkaNative());
 		this.dockerServices.put("mariaDb", mariaDb());
+		this.dockerServices.put("milvus", milvus());
 		this.dockerServices.put("mongoDb", mongoDb());
 		this.dockerServices.put("mysql", mysql());
 		this.dockerServices.put("neo4j", neo4j());
+		this.dockerServices.put("ollama", ollama());
 		this.dockerServices.put("oracleFree", oracleFree());
 		this.dockerServices.put("pgvector", pgvector());
 		this.dockerServices.put("postgres", postgres());
 		this.dockerServices.put("pulsar", pulsar());
+		this.dockerServices.put("qdrant", qdrant());
 		this.dockerServices.put("rabbit", rabbit());
 		this.dockerServices.put("redis", redis());
+		this.dockerServices.put("redisStack", redisStack());
 		this.dockerServices.put("sqlServer", sqlServer());
+		this.dockerServices.put("weaviate", weaviate());
 		this.dockerServices.put("zipkin", zipkin());
 	}
 
@@ -75,10 +83,24 @@ public class SimpleDockerServiceResolver implements DockerServiceResolver {
 			.build();
 	}
 
+	private static DockerService azurite() {
+		return DockerService.withImageAndTag("mcr.microsoft.com/azure-storage/azurite")
+			.website("https://github.com/Azure/Azurite?tab=readme-ov-file#dockerhub")
+			.ports(10000, 10001, 10002)
+			.build();
+	}
+
 	private static DockerService cassandra() {
 		return DockerService.withImageAndTag("cassandra")
 			.website("https://hub.docker.com/_/cassandra")
 			.ports(9042)
+			.build();
+	}
+
+	private static DockerService chroma() {
+		return DockerService.withImageAndTag("chromadb/chroma")
+			.website("https://hub.docker.com/r/chromadb/chroma")
+			.ports(8000)
 			.build();
 	}
 
@@ -97,8 +119,22 @@ public class SimpleDockerServiceResolver implements DockerServiceResolver {
 			.build();
 	}
 
+	private static DockerService kafkaNative() {
+		return DockerService.withImageAndTag("apache/kafka-native")
+			.website("https://hub.docker.com/r/apache/kafka-native")
+			.ports(9092)
+			.build();
+	}
+
 	private static DockerService mariaDb() {
 		return DockerService.withImageAndTag("mariadb").website("https://hub.docker.com/_/mariadb").ports(3306).build();
+	}
+
+	private static DockerService milvus() {
+		return DockerService.withImageAndTag("milvusdb/milvus")
+			.website("https://hub.docker.com/r/milvusdb/milvus")
+			.ports(19530)
+			.build();
 	}
 
 	private static DockerService mongoDb() {
@@ -111,6 +147,13 @@ public class SimpleDockerServiceResolver implements DockerServiceResolver {
 
 	private static DockerService neo4j() {
 		return DockerService.withImageAndTag("neo4j").website("https://hub.docker.com/_/neo4j").ports(7687).build();
+	}
+
+	private static DockerService ollama() {
+		return DockerService.withImageAndTag("ollama/ollama")
+			.website("https://hub.docker.com/r/ollama/ollama")
+			.ports(11434)
+			.build();
 	}
 
 	private static DockerService oracleFree() {
@@ -142,6 +185,13 @@ public class SimpleDockerServiceResolver implements DockerServiceResolver {
 			.build();
 	}
 
+	private static DockerService qdrant() {
+		return DockerService.withImageAndTag("qdrant/qdrant")
+			.website("https://hub.docker.com/r/qdrant/qdrant")
+			.ports(6334)
+			.build();
+	}
+
 	private static DockerService rabbit() {
 		return DockerService.withImageAndTag("rabbitmq")
 			.website("https://hub.docker.com/_/rabbitmq")
@@ -153,10 +203,24 @@ public class SimpleDockerServiceResolver implements DockerServiceResolver {
 		return DockerService.withImageAndTag("redis").website("https://hub.docker.com/_/redis").ports(6379).build();
 	}
 
+	private static DockerService redisStack() {
+		return DockerService.withImageAndTag("redis/redis-stack")
+			.website("https://hub.docker.com/r/redis/redis-stack")
+			.ports(6379)
+			.build();
+	}
+
 	private static DockerService sqlServer() {
 		return DockerService.withImageAndTag("mcr.microsoft.com/mssql/server")
 			.website("https://mcr.microsoft.com/en-us/product/mssql/server/about/")
 			.ports(1433)
+			.build();
+	}
+
+	private static DockerService weaviate() {
+		return DockerService.withImageAndTag("semitechnologies/weaviate")
+			.website("https://hub.docker.com/r/semitechnologies/weaviate")
+			.ports(8080)
 			.build();
 	}
 

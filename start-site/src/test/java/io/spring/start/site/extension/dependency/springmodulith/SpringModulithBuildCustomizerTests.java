@@ -55,8 +55,8 @@ class SpringModulithBuildCustomizerTests extends AbstractExtensionTests {
 	}
 
 	@ParameterizedTest
-	@ValueSource(
-			strings = { "actuator", "datadog", "graphite", "influx", "new-relic", "prometheus", "wavefront", "zipkin" })
+	@ValueSource(strings = { "actuator", "datadog", "graphite", "influx", "new-relic", "otlp-metrics", "prometheus",
+			"wavefront", "zipkin" })
 	void registersObservabilityStarterIfObservabilityDependencyIsPresent(String dependency) {
 		Build build = createBuild("modulith");
 		build.dependencies().add(dependency);
@@ -72,6 +72,24 @@ class SpringModulithBuildCustomizerTests extends AbstractExtensionTests {
 		this.customizer.customize(build);
 		assertThat(build.dependencies().ids()).contains("modulith-starter-" + store);
 		assertThat(build.dependencies().ids()).doesNotContain("modulith-starter-core");
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "amqp", "kafka" })
+	void addsExternalizationDependency(String broker) {
+		Build build = createBuild("modulith", broker);
+		this.customizer.customize(build);
+		assertThat(build.dependencies().ids()).contains("modulith-events-" + broker);
+		assertThat(build.dependencies().ids()).contains("modulith-events-api");
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "activemq", "artemis" })
+	void addsJmsExternalizationDependency(String broker) {
+		Build build = createBuild("modulith", broker);
+		this.customizer.customize(build);
+		assertThat(build.dependencies().ids()).contains("modulith-events-jms");
+		assertThat(build.dependencies().ids()).contains("modulith-events-api");
 	}
 
 	private Build createBuild(String... dependencies) {

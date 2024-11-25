@@ -46,17 +46,16 @@ class TestContainersHelpDocumentCustomizer implements HelpDocumentCustomizer {
 
 	@Override
 	public void customize(HelpDocument document) {
-		String referenceDocUrl = "https://docs.spring.io/spring-boot/docs/%s/reference/html/features.html#features.testing.testcontainers"
+		String referenceDocUrl = "https://docs.spring.io/spring-boot/%s/reference/testing/testcontainers.html#testing.testcontainers"
 			.formatted(this.description.getPlatformVersion());
 		document.gettingStarted().addReferenceDocLink(referenceDocUrl, "Spring Boot Testcontainers support");
-
 		Map<String, Object> model = new HashMap<>();
 		List<DockerService> dockerServices = this.serviceConnections.values()
 			.map(ServiceConnection::dockerService)
 			.toList();
 		model.put("services", dockerServices);
 		model.put("testcontainersAtDevelopmentTimeLink",
-				"https://docs.spring.io/spring-boot/docs/%s/reference/html/features.html#features.testing.testcontainers.at-development-time"
+				"https://docs.spring.io/spring-boot/%s/reference/features/dev-services.html#features.dev-services.testcontainers"
 					.formatted(this.description.getPlatformVersion()));
 		document.addSection("testcontainers", model);
 	}

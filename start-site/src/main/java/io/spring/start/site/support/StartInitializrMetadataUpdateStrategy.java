@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 the original author or authors.
+ * Copyright 2012-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package io.spring.start.site.support;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.spring.initializr.generator.version.Version;
@@ -33,10 +32,11 @@ import org.springframework.web.client.RestTemplate;
  *
  * @author Stephane Nicoll
  * @author Moritz Halbritter
+ * @author Eddú Meléndez
  */
 public class StartInitializrMetadataUpdateStrategy extends SpringIoInitializrMetadataUpdateStrategy {
 
-	private static final Version MINIMUM_BOOT_VERSION = Version.parse("3.2.0");
+	private static final Version MINIMUM_BOOT_VERSION = Version.parse("3.3.0");
 
 	public StartInitializrMetadataUpdateStrategy(RestTemplate restTemplate, ObjectMapper objectMapper) {
 		super(restTemplate, objectMapper);
@@ -45,8 +45,7 @@ public class StartInitializrMetadataUpdateStrategy extends SpringIoInitializrMet
 	@Override
 	protected List<DefaultMetadataElement> fetchSpringBootVersions(String url) {
 		List<DefaultMetadataElement> versions = super.fetchSpringBootVersions(url);
-		return (versions != null) ? versions.stream().filter(this::isCompatibleVersion).collect(Collectors.toList())
-				: null;
+		return (versions != null) ? versions.stream().filter(this::isCompatibleVersion).toList() : null;
 	}
 
 	private boolean isCompatibleVersion(DefaultMetadataElement versionMetadata) {

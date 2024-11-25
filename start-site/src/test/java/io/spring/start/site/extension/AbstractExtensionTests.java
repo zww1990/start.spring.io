@@ -33,6 +33,7 @@ import io.spring.initializr.web.project.ProjectGenerationInvoker;
 import io.spring.initializr.web.project.ProjectGenerationResult;
 import io.spring.initializr.web.project.ProjectRequest;
 import io.spring.initializr.web.project.WebProjectRequest;
+import io.spring.start.site.SupportedBootVersion;
 import org.assertj.core.api.AssertProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,19 +102,49 @@ public abstract class AbstractExtensionTests {
 		return () -> new TextAssert(project.getProjectDirectory().resolve("compose.yaml"));
 	}
 
+	protected AssertProvider<TextAssert> applicationProperties(ProjectRequest request) {
+		ProjectStructure project = generateProject(request);
+		return () -> new TextAssert(project.getProjectDirectory().resolve("src/main/resources/application.properties"));
+	}
+
+	protected AssertProvider<TextAssert> gitIgnore(ProjectRequest request) {
+		ProjectStructure project = generateProject(request);
+		return () -> new TextAssert(project.getProjectDirectory().resolve(".gitignore"));
+	}
+
+	protected AssertProvider<TextAssert> helpDocument(ProjectStructure project) {
+		return () -> new TextAssert(project.getProjectDirectory().resolve("HELP.md"));
+	}
+
+	protected AssertProvider<TextAssert> helpDocument(ProjectRequest request) {
+		return helpDocument(generateProject(request));
+	}
+
 	protected ProjectStructure generateProject(ProjectRequest request) {
 		ProjectGenerationResult result = getInvoker().invokeProjectStructureGeneration(request);
 		return new ProjectStructure(result.getRootDirectory());
 	}
 
 	/**
-	 * Create a Maven-based {@link ProjectRequest} with the specified dependencies.
+	 * Create a Maven-based {@link ProjectRequest} with the specified dependencies. Uses
+	 * the latest supported Spring Boot version.
 	 * @param dependencies the dependency identifiers to add
 	 * @return a project request
 	 */
 	protected ProjectRequest createProjectRequest(String... dependencies) {
+		return createProjectRequest(SupportedBootVersion.latest(), dependencies);
+	}
+
+	/**
+	 * Create a Maven-based {@link ProjectRequest} with the specified dependencies.
+	 * @param springBootVersion the Spring Boot version to use
+	 * @param dependencies the dependency identifiers to add
+	 * @return a project request
+	 */
+	protected ProjectRequest createProjectRequest(SupportedBootVersion springBootVersion, String... dependencies) {
 		WebProjectRequest request = new WebProjectRequest();
 		request.initialize(this.metadataProvider.get());
+		request.setBootVersion(springBootVersion.getVersion());
 		request.setType("maven-project");
 		request.getDependencies().addAll(Arrays.asList(dependencies));
 		return request;

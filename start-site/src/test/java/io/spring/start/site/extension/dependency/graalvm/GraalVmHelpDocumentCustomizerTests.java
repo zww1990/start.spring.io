@@ -24,9 +24,9 @@ import io.spring.initializr.generator.project.MutableProjectDescription;
 import io.spring.initializr.generator.project.ProjectDescription;
 import io.spring.initializr.generator.spring.documentation.HelpDocument;
 import io.spring.initializr.generator.test.io.TextAssert;
-import io.spring.initializr.generator.test.project.ProjectStructure;
 import io.spring.initializr.generator.version.Version;
 import io.spring.initializr.web.project.ProjectRequest;
+import io.spring.start.site.SupportedBootVersion;
 import io.spring.start.site.extension.AbstractExtensionTests;
 import org.junit.jupiter.api.Test;
 
@@ -48,24 +48,22 @@ class GraalVmHelpDocumentCustomizerTests extends AbstractExtensionTests {
 	@Test
 	void mavenBuildAddLinkToMavenAotPlugin() {
 		MutableProjectDescription description = new MutableProjectDescription();
-		description.setPlatformVersion(Version.parse("3.2.0"));
+		description.setPlatformVersion(Version.parse(SupportedBootVersion.latest().getVersion()));
 		HelpDocument document = customize(description, new MavenBuild());
 		assertThat(document.gettingStarted().additionalLinks().getItems()).singleElement().satisfies((link) -> {
 			assertThat(link.getDescription()).isEqualTo("Configure AOT settings in Build Plugin");
-			assertThat(link.getHref())
-				.isEqualTo("https://docs.spring.io/spring-boot/docs/3.2.0/maven-plugin/reference/htmlsingle/#aot");
+			assertThat(link.getHref()).isEqualTo("https://docs.spring.io/spring-boot/3.4.0/how-to/aot.html");
 		});
 	}
 
 	@Test
 	void gradleBuildAddLinkToGradleAotPlugin() {
 		MutableProjectDescription description = new MutableProjectDescription();
-		description.setPlatformVersion(Version.parse("3.2.0"));
+		description.setPlatformVersion(Version.parse(SupportedBootVersion.latest().getVersion()));
 		HelpDocument document = customize(description, new GradleBuild());
 		assertThat(document.gettingStarted().additionalLinks().getItems()).singleElement().satisfies((link) -> {
 			assertThat(link.getDescription()).isEqualTo("Configure AOT settings in Build Plugin");
-			assertThat(link.getHref())
-				.isEqualTo("https://docs.spring.io/spring-boot/docs/3.2.0/gradle-plugin/reference/htmlsingle/#aot");
+			assertThat(link.getHref()).isEqualTo("https://docs.spring.io/spring-boot/3.4.0/how-to/aot.html");
 		});
 	}
 
@@ -120,8 +118,7 @@ class GraalVmHelpDocumentCustomizerTests extends AbstractExtensionTests {
 	}
 
 	private TextAssert assertHelpDocument(ProjectRequest request) {
-		ProjectStructure project = generateProject(request);
-		return new TextAssert(project.getProjectDirectory().resolve("HELP.md"));
+		return assertThat(helpDocument(request));
 	}
 
 	private TextAssert assertHelpDocument(String type, String... dependencies) {

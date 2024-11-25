@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2023 the original author or authors.
+ * Copyright 2012-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,15 @@
 
 package io.spring.start.site;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.spring.initializr.metadata.BillOfMaterials;
+import io.spring.start.testsupport.Homes;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
@@ -58,36 +55,23 @@ import org.eclipse.aether.util.filter.DependencyFilterUtils;
 import org.eclipse.aether.util.graph.visitor.FilteringDependencyVisitor;
 import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy;
 
-import org.springframework.util.FileSystemUtils;
-
 final class DependencyResolver {
-
-	private static final Collection<DependencyResolver> instances = new ArrayList<>();
-
-	private static final ThreadLocal<DependencyResolver> instanceForThread = ThreadLocal.withInitial(() -> {
-		DependencyResolver instance = new DependencyResolver();
-		instances.add(instance);
-		return instance;
-	});
 
 	static final RemoteRepository mavenCentral = createRemoteRepository("central", "https://repo1.maven.org/maven2",
 			false);
 
 	private static final Map<String, List<Dependency>> managedDependencies = new ConcurrentHashMap<>();
 
-	private final Path localRepositoryLocation;
-
 	private final RepositorySystemSession repositorySystemSession;
 
 	private final RepositorySystem repositorySystem;
 
-	DependencyResolver() {
+	DependencyResolver(Path localRepositoryLocation) {
 		try {
 			ServiceLocator serviceLocator = createServiceLocator();
 			DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
 			session.setArtifactDescriptorPolicy(new SimpleArtifactDescriptorPolicy(false, false));
-			this.localRepositoryLocation = Files.createTempDirectory("metadata-validation-m2");
-			LocalRepository localRepository = new LocalRepository(this.localRepositoryLocation.toFile());
+			LocalRepository localRepository = new LocalRepository(localRepositoryLocation.toFile());
 			this.repositorySystem = serviceLocator.getService(RepositorySystem.class);
 			session
 				.setLocalRepositoryManager(this.repositorySystem.newLocalRepositoryManager(session, localRepository));
@@ -112,33 +96,26 @@ final class DependencyResolver {
 		return repositoryBuilder.build();
 	}
 
-	static List<String> resolveDependencies(String groupId, String artifactId, String version,
+	static List<String> resolveDependencies(Homes homes, String groupId, String artifactId, String version,
 			List<BillOfMaterials> boms, List<RemoteRepository> repositories) {
-		DependencyResolver instance = instanceForThread.get();
-		List<Dependency> managedDependencies = instance.getManagedDependencies(boms, repositories);
-		Dependency aetherDependency = new Dependency(new DefaultArtifact(groupId, artifactId, "pom",
-				instance.getVersion(groupId, artifactId, version, managedDependencies)), "compile");
-		CollectRequest collectRequest = new CollectRequest(aetherDependency, repositories);
-		collectRequest.setManagedDependencies(managedDependencies);
+		Path home = homes.acquire();
 		try {
-			CollectResult result = instance.collectDependencies(collectRequest);
-			return DependencyCollector.collect(result.getRoot(), RuntimeTransitiveOnlyDependencyFilter.INSTANCE);
+			DependencyResolver instance = new DependencyResolver(home.resolve("repository"));
+			List<Dependency> managedDependencies = instance.getManagedDependencies(boms, repositories);
+			Dependency aetherDependency = new Dependency(new DefaultArtifact(groupId, artifactId, "pom",
+					instance.getVersion(groupId, artifactId, version, managedDependencies)), "compile");
+			CollectRequest collectRequest = new CollectRequest(aetherDependency, repositories);
+			collectRequest.setManagedDependencies(managedDependencies);
+			try {
+				CollectResult result = instance.collectDependencies(collectRequest);
+				return DependencyCollector.collect(result.getRoot(), RuntimeTransitiveOnlyDependencyFilter.INSTANCE);
+			}
+			catch (DependencyCollectionException ex) {
+				throw new RuntimeException(ex);
+			}
 		}
-		catch (DependencyCollectionException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
-
-	static void cleanUp() {
-		instances.forEach(DependencyResolver::deleteLocalRepository);
-	}
-
-	void deleteLocalRepository() {
-		try {
-			FileSystemUtils.deleteRecursively(this.localRepositoryLocation);
-		}
-		catch (IOException ex) {
-			// Continue
+		finally {
+			homes.release(home);
 		}
 	}
 
@@ -146,7 +123,7 @@ final class DependencyResolver {
 		return boms.stream()
 			.flatMap((bom) -> getManagedDependencies(bom.getGroupId(), bom.getArtifactId(), bom.getVersion(),
 					repositories))
-			.collect(Collectors.toList());
+			.toList();
 	}
 
 	private Stream<Dependency> getManagedDependencies(String groupId, String artifactId, String version,

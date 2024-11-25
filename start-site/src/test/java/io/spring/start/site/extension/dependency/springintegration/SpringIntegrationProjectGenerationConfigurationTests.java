@@ -36,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Stephane Nicoll
  * @author Artem Bilan
  * @author Brian Clozel
+ * @author Moritz Halbritter
  */
 class SpringIntegrationProjectGenerationConfigurationTests extends AbstractExtensionTests {
 
@@ -66,24 +67,23 @@ class SpringIntegrationProjectGenerationConfigurationTests extends AbstractExten
 				Arguments.arguments("data-r2dbc", "r2dbc"), Arguments.arguments("data-redis", "redis"),
 				Arguments.arguments("data-redis-reactive", "redis"), Arguments.arguments("kafka", "kafka"),
 				Arguments.arguments("kafka-streams", "kafka"), Arguments.arguments("mail", "mail"),
-				Arguments.arguments("rsocket", "rsocket"), Arguments.arguments("security", "security"),
-				Arguments.arguments("web", "http"), Arguments.arguments("webflux", "webflux"),
-				Arguments.arguments("websocket", "websocket"), Arguments.arguments("websocket", "stomp"),
-				Arguments.arguments("web-services", "ws"));
+				Arguments.arguments("rsocket", "rsocket"), Arguments.arguments("web", "http"),
+				Arguments.arguments("webflux", "webflux"), Arguments.arguments("websocket", "websocket"),
+				Arguments.arguments("websocket", "stomp"), Arguments.arguments("web-services", "ws"));
 	}
 
 	@ParameterizedTest
 	@MethodSource("referenceLinks")
 	void linkToSupportedEntriesWhenSpringIntegrationIsPresentIsAdded(String dependencyId, String pageName) {
 		assertHelpDocument("integration", dependencyId)
-			.contains("https://docs.spring.io/spring-integration/reference/html/" + pageName + ".html");
+			.contains("https://docs.spring.io/spring-integration/reference/%s.html".formatted(pageName));
 	}
 
 	@ParameterizedTest
 	@MethodSource("referenceLinks")
 	void linkToSupportedEntriesWhenSpringIntegrationIsNotPresentIsNotAdded(String dependencyId, String pageName) {
 		assertHelpDocument(dependencyId)
-			.doesNotContain("https://docs.spring.io/spring-integration/reference/html/" + pageName + ".html");
+			.doesNotContain("https://docs.spring.io/spring-integration/reference/%s.html".formatted(pageName));
 	}
 
 	static Stream<Arguments> referenceLinks() {
@@ -106,6 +106,14 @@ class SpringIntegrationProjectGenerationConfigurationTests extends AbstractExten
 			.containsOnlyOnce("https://java.testcontainers.org/modules/databases/mongodb/");
 	}
 
+	@Test
+	void securityAddsSpringSecurityMessaging() {
+		assertThat(generateProject("integration", "security")).mavenBuild()
+			.hasDependency("org.springframework.security", "spring-security-messaging")
+			.doesNotHaveDependency("org.springframework.integration", "spring-integration-security");
+
+	}
+
 	private static Dependency integrationDependency(String id) {
 		String integrationModule = "spring-integration-" + id;
 		return io.spring.initializr.metadata.Dependency.withId(integrationModule, "org.springframework.integration",
@@ -120,8 +128,7 @@ class SpringIntegrationProjectGenerationConfigurationTests extends AbstractExten
 
 	private TextAssert assertHelpDocument(String... dependencyIds) {
 		ProjectRequest request = createProjectRequest(dependencyIds);
-		ProjectStructure project = generateProject(request);
-		return new TextAssert(project.getProjectDirectory().resolve("HELP.md"));
+		return assertThat(helpDocument(request));
 	}
 
 }
